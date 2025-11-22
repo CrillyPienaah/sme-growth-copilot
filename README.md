@@ -449,9 +449,9 @@ SOFTWARE.
 
 ## 👤 Author
 
-**Christopher Pienaah**  
+**Christopher Crilly Pienaah**  
 Master's in Analytics @ Northeastern University (GPA: 3.96)  
-AI/ML Product Strategist | Founder, LuminaMed-AI
+AI/ML Product Strategist & Data Scientist | Founder, LuminaMed-AI
 
 - LinkedIn: [Christopher Pienaah](https://linkedin.com/in/yourprofile)
 - GitHub: [@yourhandle](https://github.com/yourhandle)
