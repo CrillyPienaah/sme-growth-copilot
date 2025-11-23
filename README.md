@@ -453,9 +453,9 @@ SOFTWARE.
 Master's in Analytics @ Northeastern University (GPA: 3.96)  
 AI/ML Product Strategist & Data Scientist | Founder, LuminaMed-AI
 
-- LinkedIn: [Christopher Pienaah](https://linkedin.com/in/yourprofile)
-- GitHub: [@yourhandle](https://github.com/yourhandle)
-- Portfolio: [luminamed-ai.com](https://yourportfolio.com)
+- LinkedIn: [Christopher Crilly Pienaah](https:www.linkedin.com/in/christopher-crilly-pienaah)
+- GitHub: @CrillyPienaah(https://github.com/yourhandle)
+- Portfolio: [luminamed-ai.com]
 
 ---
 
