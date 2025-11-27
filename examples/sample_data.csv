@@ -1,0 +1,2 @@
+business_id,business_name,industry,region,channels,target_audience,tone,visits,leads,signups,purchases,revenue,retention_rate,goal,horizon_weeks,constraints
+demo_sme_001,Neighborhood Coffee Hub,Food & Beverage,"Toronto, Canada","in-store,email,instagram",local professionals and students,warm community-focused friendly,2000,350,200,80,8400.0,0.35,increase repeat purchases from existing customers,6,No paid ads; focus on owned channels like email and in-store promos
