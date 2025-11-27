@@ -24,6 +24,7 @@ SME Growth Co-Pilot is an **enterprise-grade AI agent** that transforms small bu
 - 🎯 **ICE Prioritization** - Scores experiments by Impact, Confidence, and Effort for data-driven decisions
 - 🤖 **AI Strategy Commentary** - Gemini-powered business reasoning explaining the "why" behind recommendations
 - ✍️ **Marketing Copy Generation** - Creates ready-to-use campaign messaging
+- 📁 **Flexible Data Input** - Accept JSON requests or upload CSV files directly
 - 💾 **Historical Tracking** - Logs all plans for trend analysis and continuous improvement
 
 ---
@@ -58,6 +59,7 @@ flowchart TD
 | **Backend Framework** | FastAPI | High-performance async API |
 | **Data Validation** | Pydantic | Type-safe schemas & models |
 | **AI Engine** | Google Gemini 2.0 Flash | LLM-powered strategy generation |
+| **Data Processing** | Pandas | CSV parsing & data transformation |
 | **Storage** | JSONL | Append-only historical logging |
 | **Testing** | Pytest | Unit & integration tests |
 | **Documentation** | OpenAPI/Swagger | Auto-generated interactive docs |
@@ -72,12 +74,17 @@ sme-growth-copilot/
 │   ├── main.py              # FastAPI app & endpoints
 │   ├── schemas.py           # Pydantic models (BusinessProfile, GrowthPlan, etc.)
 │   ├── logic.py             # Core business logic & ICE scoring
+│   ├── parsers.py           # CSV parsing & data extraction
 │   ├── llm_strategy.py      # Gemini integration with fallback handling
 │   └── storage.py           # JSONL persistence layer
 ├── data/
 │   └── plan_log.jsonl       # Historical plans (auto-created)
+├── examples/
+│   ├── sample_payload.json  # Example JSON request
+│   └── sample_data.csv      # Example CSV upload
 ├── tests/
-│   └── test_logic.py        # Unit tests for funnel analysis
+│   ├── test_logic.py        # Unit tests for funnel analysis
+│   └── test_parsers.py      # Unit tests for CSV parsing
 ├── screenshots/             # API documentation images
 ├── requirements.txt         # Python dependencies
 ├── USAGE.md                 # Detailed usage guide
@@ -97,7 +104,7 @@ sme-growth-copilot/
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/sme-growth-copilot.git
+git clone https://github.com/CrillyPienaah/sme-growth-copilot.git
 cd sme-growth-copilot
 
 # Create virtual environment
@@ -133,22 +140,26 @@ open http://127.0.0.1:8000/docs
 
 ### Test with Sample Data
 
-Try the API with the provided example:
+**Option 1: JSON Request**
 ```bash
-# Using cURL (with sample file)
 curl -X POST "http://127.0.0.1:8000/plan" \
   -H "Content-Type: application/json" \
   -d @examples/sample_payload.json
 ```
 
+**Option 2: CSV Upload** ⭐ NEW!
+```bash
+curl -X POST "http://127.0.0.1:8000/plan/from-csv" \
+  -F "file=@examples/sample_data.csv"
+```
+
 **Or use the interactive docs:**
 1. Go to http://127.0.0.1:8000/docs
-2. Click **POST /plan** → **Try it out**
-3. Copy the JSON from `examples/sample_payload.json`
-4. Click **Execute**
+2. Choose **POST /plan** (JSON) or **POST /plan/from-csv** (file upload)
+3. Click **Try it out**
+4. Provide data and click **Execute**
 
 You'll get a complete growth plan with funnel analysis, prioritized experiments, and AI strategy!
-```
 
 ---
 
@@ -223,6 +234,8 @@ Gemini analyzes the business context and explains:
 ### POST /plan
 **Create a growth plan from business KPIs**
 
+Send structured JSON data to generate a growth plan.
+
 **Request:**
 ```json
 {
@@ -253,15 +266,70 @@ Gemini analyzes the business context and explains:
 - Marketing copy
 - AI strategy commentary
 
+---
+
+### POST /plan/from-csv ⭐ NEW!
+**Upload a CSV file with business data**
+
+Don't want to format JSON manually? Upload a CSV file instead! Perfect for businesses exporting data from Shopify, Google Analytics, or their CRM.
+
+**CSV Format:**
+```csv
+business_name,industry,region,channels,visits,leads,signups,purchases,revenue,goal
+Coffee Shop,Food & Beverage,Toronto,"email,website",2000,350,200,80,8400,increase sales
+```
+
+**Required columns:**
+- `business_name`, `industry`, `region`
+- `visits`, `leads`, `signups`, `purchases`, `revenue`
+- `goal`
+
+**Optional columns:**
+- `business_id`, `channels`, `target_audience`, `tone`, `retention_rate`, `horizon_weeks`, `constraints`, `period`
+
+**Using cURL:**
+```bash
+curl -X POST "http://127.0.0.1:8000/plan/from-csv" \
+  -F "file=@examples/sample_data.csv"
+```
+
+**Or use interactive docs:**
+1. Go to http://127.0.0.1:8000/docs
+2. Click **POST /plan/from-csv** → **Try it out**
+3. Click **"Choose File"** and select your CSV
+4. Click **Execute**
+
+**Example CSV:** See `examples/sample_data.csv` for complete working example.
+
+**Benefits:**
+- ✅ No JSON formatting required
+- ✅ Export directly from analytics tools
+- ✅ Batch process multiple businesses
+- ✅ Same powerful analysis as JSON endpoint
+
+---
+
 ### GET /plans/{business_id}
 **Retrieve historical plans**
 
 Returns all past plans for a business with timestamps.
 
+**Example:**
+```bash
+curl http://127.0.0.1:8000/plans/demo_sme_001
+```
+
+---
+
 ### GET /health
 **System health check**
 
 Returns `{"status": "ok"}` if operational.
+
+**Example:**
+```bash
+curl http://127.0.0.1:8000/health
+```
 
 ---
 
@@ -314,6 +382,17 @@ response = client.chat.completions.create(
 )
 ```
 
+### Add Custom CSV Column Mappings
+
+**File:** `app/parsers.py`
+```python
+# Add custom mappings for different CSV formats
+COLUMN_MAPPINGS = {
+    'shopify': {'visitors': 'visits', 'customers': 'purchases'},
+    'analytics': {'sessions': 'visits', 'conversions': 'purchases'}
+}
+```
+
 ### Add Authentication
 
 **File:** `app/main.py`
@@ -360,6 +439,7 @@ gcloud run deploy sme-growth-copilot \
 - [x] Gemini integration
 - [x] JSONL logging
 - [x] Interactive API docs
+- [x] CSV upload capability
 
 ### Phase 2: Intelligence Layer (In Progress)
 - [ ] Multi-agent ADK architecture
@@ -374,6 +454,7 @@ gcloud run deploy sme-growth-copilot \
 - [ ] Email campaign integration (SendGrid/Mailgun)
 - [ ] Slack notifications for completed plans
 - [ ] Dashboard UI with analytics
+- [ ] Multi-format data ingestion (Excel, Google Sheets API)
 
 ### Phase 4: Scale & Optimization (Future)
 - [ ] Cloud deployment (Cloud Run / AWS Lambda)
@@ -394,12 +475,15 @@ pytest --cov=app tests/
 
 # Test specific module
 pytest tests/test_logic.py::test_diagnose_funnel -v
+pytest tests/test_parsers.py::test_parse_basic_csv -v
 ```
 
 **Current test coverage:**
-- Funnel diagnosis logic
-- ICE scoring calculations
+- Funnel diagnosis logic (99% coverage)
+- ICE scoring calculations (100% coverage)
+- CSV parsing and validation (78% coverage)
 - End-to-end plan generation
+- **Overall: 69% coverage with 18 passing tests**
 
 ---
 
@@ -407,16 +491,19 @@ pytest tests/test_logic.py::test_diagnose_funnel -v
 
 ### Use Case 1: Local Coffee Shop
 **Problem:** Low lead capture (82% drop from visits to leads)  
+**Input Method:** Upload monthly analytics CSV  
 **Solution:** Referral program via email (Priority: 7.5)  
 **Result:** Low-effort, high-impact experiment leveraging existing customers
 
 ### Use Case 2: SaaS Startup
 **Problem:** Poor trial-to-paid conversion (75% drop from signups to purchases)  
+**Input Method:** JSON API integration with CRM  
 **Solution:** Onboarding nurture sequence (Priority: 8.3)  
 **Result:** Automated education reduces friction, builds trust
 
 ### Use Case 3: E-commerce Store
 **Problem:** High bounce rate at signup (60% drop from leads to signups)  
+**Input Method:** Shopify export CSV  
 **Solution:** Live product demo sessions (Priority: 5.3)  
 **Result:** Hands-on experience increases confidence
 
@@ -427,6 +514,7 @@ pytest tests/test_logic.py::test_diagnose_funnel -v
 - **[USAGE.md](USAGE.md)** - Detailed usage guide with API examples
 - **[/docs](http://127.0.0.1:8000/docs)** - Interactive API documentation (when server running)
 - **[LICENSE](LICENSE)** - MIT License details
+- **[examples/](examples/)** - Sample JSON and CSV files for testing
 
 ---
 
@@ -439,6 +527,7 @@ Contributions welcome! This project is designed for extensibility.
 - Industry-specific logic
 - New funnel metrics
 - LLM provider integrations
+- CSV format adapters for popular platforms (Shopify, Stripe, etc.)
 - Test coverage improvements
 
 ---
@@ -475,9 +564,9 @@ SOFTWARE.
 Master's in Analytics @ Northeastern University (GPA: 3.96)  
 AI/ML Product Strategist & Data Scientist | Founder, LuminaMed-AI
 
-- LinkedIn: [Christopher Crilly Pienaah](https:www.linkedin.com/in/christopher-crilly-pienaah)
-- GitHub: @CrillyPienaah(https://github.com/CrillyPienaah)
-- Portfolio: [luminamed-ai.com]
+- LinkedIn: [Christopher Crilly Pienaah](https://www.linkedin.com/in/christopher-crilly-pienaah)
+- GitHub: [@CrillyPienaah](https://github.com/CrillyPienaah)
+- Portfolio: LuminaMed-AI
 
 ---
 
@@ -487,43 +576,19 @@ AI/ML Product Strategist & Data Scientist | Founder, LuminaMed-AI
 - Powered by **Google Gemini 2.0 Flash**
 - Inspired by Sean Ellis's ICE prioritization framework
 - Special thanks to the Northeastern Analytics cohort
+- CSV upload feature inspired by community feedback on reducing data entry friction
 
 ---
 
 ## 📈 Project Stats
 
-- **Lines of Code:** ~800
-- **Test Coverage:** 75%
+- **Lines of Code:** ~1,000
+- **Test Coverage:** 69% (18 tests passing)
+- **API Endpoints:** 4 (JSON, CSV, history, health)
 - **API Response Time:** <500ms (excl. LLM)
+- **Supported Input Formats:** JSON, CSV
 - **Supported Industries:** All (customizable experiment templates)
 
 ---
 
 **Built with ❤️ for small businesses that deserve world-class growth strategy**
-```
-
----
-
-## 📄 File 3: LICENSE (MIT)
-```
-MIT License
-
-Copyright (c) 2025 Christopher Crilly Pienaah
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
