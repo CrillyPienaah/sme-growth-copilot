@@ -1,0 +1,25 @@
+{
+  "business_profile": {
+    "business_id": "demo_sme_001",
+    "name": "Neighborhood Coffee Hub",
+    "industry": "Food & Beverage",
+    "region": "Toronto, Canada",
+    "main_channels": ["in-store", "email", "instagram"],
+    "target_audience": "local professionals and students",
+    "tone_of_voice": "warm, community-focused, friendly"
+  },
+  "kpis": {
+    "period": "last_30_days",
+    "visits": 2000,
+    "leads": 350,
+    "signups": 200,
+    "purchases": 80,
+    "revenue": 8400.0,
+    "retention_rate": 0.35
+  },
+  "goal": {
+    "objective": "increase repeat purchases from existing customers",
+    "horizon_weeks": 6,
+    "constraints": "No paid ads; focus on owned channels like email and in-store promos."
+  }
+}
