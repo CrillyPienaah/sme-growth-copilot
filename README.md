@@ -6,7 +6,10 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![Gemini](https://img.shields.io/badge/Google-Gemini%202.0-orange.svg)](https://ai.google.dev/gemini-api)
+[![Kaggle](https://img.shields.io/badge/Kaggle-AI%20Agents%20Capstone-20BEFF.svg)](https://www.kaggle.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ---
 
@@ -126,6 +129,25 @@ curl http://127.0.0.1:8000/health
 
 # Interactive API docs
 open http://127.0.0.1:8000/docs
+```
+
+### Test with Sample Data
+
+Try the API with the provided example:
+```bash
+# Using cURL (with sample file)
+curl -X POST "http://127.0.0.1:8000/plan" \
+  -H "Content-Type: application/json" \
+  -d @examples/sample_payload.json
+```
+
+**Or use the interactive docs:**
+1. Go to http://127.0.0.1:8000/docs
+2. Click **POST /plan** → **Try it out**
+3. Copy the JSON from `examples/sample_payload.json`
+4. Click **Execute**
+
+You'll get a complete growth plan with funnel analysis, prioritized experiments, and AI strategy!
 ```
 
 ---
