@@ -1,7 +1,9 @@
 # SME Growth Co-Pilot 🚀
 
+**🌐 Live Demo:** https://web-production-a0573.up.railway.app/docs
+
 **Version:** 0.1.0  
-**Status:** Active Development  
+**Status:** ✅ DEPLOYED - Multi-Agent System Active  
 **Maintainer:** Christopher Crilly Pienaah
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -230,7 +232,28 @@ sme-growth-copilot/
 ├── README.md                   # This file
 └── LICENSE                     # MIT License
 ```
+---
 
+## 🌐 Live Deployment
+
+**Try it now (no installation required):**
+
+🔗 **Interactive API:** https://web-production-a0573.up.railway.app/docs
+
+**Quick test:**
+- Health check: https://web-production-a0573.up.railway.app/health
+- API documentation: https://web-production-a0573.up.railway.app/docs
+
+The live deployment runs the **complete 6-agent multi-agent system** with:
+- ✅ Real-time agent logging with trace IDs
+- ✅ Revenue opportunity calculations
+- ✅ AI-powered strategy commentary (Gemini 2.0)
+- ✅ CSV upload support
+- ✅ Full observability
+
+**Note:** The deployed system uses multi-agent architecture (USE_MULTI_AGENT=true). You can see all 6 agents executing in sequence through the trace logging.
+
+---
 ---
 
 ## 🚀 Quick Start
