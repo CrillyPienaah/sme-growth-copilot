@@ -25,31 +25,156 @@ SME Growth Co-Pilot is an **enterprise-grade AI agent** that transforms small bu
 - 🤖 **AI Strategy Commentary** - Gemini-powered business reasoning explaining the "why" behind recommendations
 - ✍️ **Marketing Copy Generation** - Creates ready-to-use campaign messaging
 - 📁 **Flexible Data Input** - Accept JSON requests or upload CSV files directly
+- 🏗️ **Multi-Agent Architecture** - 6 specialized AI agents working collaboratively with full observability
+- 💰 **Revenue Opportunity Analysis** - Calculates potential revenue from fixing identified bottlenecks
 - 💾 **Historical Tracking** - Logs all plans for trend analysis and continuous improvement
-
 ---
 
 ## 🎯 System Architecture
+
+### Multi-Agent Workflow
+
+The system uses **6 specialized AI agents** that work collaboratively to generate growth strategies:
 ```mermaid
 flowchart TD
-    A[POST /plan] --> B[Request Validation]
-    B --> C[Funnel Diagnosis]
-    C --> D[Bottleneck Detection]
-    D --> E[Experiment Generation]
-    E --> F[ICE Scoring]
-    F --> G[Priority Ranking]
-    G --> H[Top Experiment Selection]
-    H --> I[Copy Generation]
-    I --> J[Gemini Strategy Commentary]
-    J --> K[Plan Assembly]
-    K --> L[JSONL Logging]
-    L --> M[Response Delivery]
+    A[API Request] --> B[GrowthCoPilotOrchestrator]
+    B --> C[IntakeAgent]
+    C --> D[AnalystAgent]
+    D --> E[StrategyAgent]
+    E --> F[ScoringAgent]
+    F --> G[JudgeAgent]
+    G --> H[CopywriterAgent]
+    H --> I[Final Plan Assembly]
+    I --> J[Response + Logging]
     
-    style J fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#bbf,stroke:#333,stroke-width:2px
-    style F fill:#bfb,stroke:#333,stroke-width:2px
+    C -->|Validated Data| D
+    D -->|Funnel Insight| E
+    E -->|Experiments| F
+    F -->|Scored Experiments| G
+    G -->|Winner| H
+    H -->|Marketing Copy| I
+    
+    K[AgentContext]
+    K -.->|Trace ID| C
+    K -.->|Metadata| D
+    K -.->|Revenue Calc| E
+    K -.->|Shared State| F
+    
+    style B fill:#f96,stroke:#333,stroke-width:3px
+    style C fill:#9cf,stroke:#333,stroke-width:2px
+    style D fill:#9cf,stroke:#333,stroke-width:2px
+    style E fill:#9cf,stroke:#333,stroke-width:2px
+    style F fill:#9cf,stroke:#333,stroke-width:2px
+    style G fill:#9cf,stroke:#333,stroke-width:2px
+    style H fill:#9cf,stroke:#333,stroke-width:2px
+    style K fill:#fcf,stroke:#333,stroke-width:2px
 ```
 
+### Agent Responsibilities
+
+**🔍 IntakeAgent** - Request Validation
+- Validates KPI data quality
+- Checks for impossible ratios (e.g., purchases > signups)
+- Flags data quality warnings
+- Ensures clean data for downstream agents
+
+**📊 AnalystAgent** - Funnel Diagnosis
+- Identifies biggest conversion bottleneck
+- Calculates conversion rates at each stage
+- Estimates revenue opportunity from fixing issues
+- Example: "$6,930 potential revenue if visits→leads bottleneck is fixed"
+
+**💡 StrategyAgent** - Experiment Generation
+- Proposes context-aware growth experiments
+- Matches experiments to detected bottlenecks
+- Considers business constraints and channels
+- Generates 2-6 targeted recommendations
+
+**🎯 ScoringAgent** - ICE Prioritization
+- Scores experiments: (Impact × Confidence) / Effort
+- Ranks experiments by priority score
+- Provides scoring rationale
+- Example: Referral Program scores 7.5 (Impact:5, Confidence:3, Effort:2)
+
+**✍️ CopywriterAgent** - Marketing Copy
+- Generates ready-to-use campaign messaging
+- Adapts to business tone and voice
+- Creates channel-specific copy (email, social, in-store)
+- Provides complete campaign text
+
+**⚖️ JudgeAgent** - Decision & Explanation
+- Selects #1 experiment to prioritize
+- Generates AI-powered strategy explanation (via Gemini)
+- Explains WHY this experiment is best
+- Provides actionable next steps
+
+### Agent Communication
+
+All agents share an **AgentContext** containing:
+- **Trace ID**: Unique identifier for request tracking (e.g., `cf26769b`)
+- **Metadata**: Shared data between agents (revenue opportunities, warnings, metrics)
+- **History**: Complete audit trail of agent actions
+
+**Example trace log:**
+```
+INFO: agent.Intake - [cf26769b] Intake: Validating request
+INFO: agent.Analyst - [cf26769b] Revenue opportunity: $6,930.00
+INFO: agent.Strategy - [cf26769b] Strategy: Experiments proposed
+INFO: agent.Scoring - [cf26769b] Scoring: Top: Referral Program (7.5)
+INFO: agent.Judge - [cf26769b] Judge: Winner selected
+INFO: agent.Copywriter - [cf26769b] Copywriter: Copy generated
+```
+---
+
+## 🤖 Multi-Agent Architecture
+
+### Why Multi-Agent?
+
+Instead of a single monolithic function, the system uses **6 specialized agents** that collaborate like a real consulting team:
+
+**Benefits:**
+- ✅ **Separation of Concerns** - Each agent focuses on one task
+- ✅ **Independent Testing** - Test each agent in isolation
+- ✅ **Easy to Extend** - Add new agents without touching existing ones
+- ✅ **Swappable Components** - Replace individual agents (e.g., swap Gemini for GPT-4)
+- ✅ **Full Observability** - Trace every step with unique IDs
+- ✅ **Graceful Degradation** - If one agent fails, others continue
+
+### Agent Workflow Example
+```
+Request: Coffee shop with 2,000 visits, 350 leads
+
+IntakeAgent:     ✅ Validates data quality
+AnalystAgent:    📊 "82.5% drop visits→leads, $6,930 opportunity"
+StrategyAgent:   💡 "Propose: Referral Program + Lead Magnet"
+ScoringAgent:    🎯 "Referral: 7.5, Lead Magnet: 6.7"  
+JudgeAgent:      ⚖️ "Select: Referral Program (highest score)"
+CopywriterAgent: ✍️ "Subject: A thank-you from Neighborhood Coffee Hub..."
+JudgeAgent:      🤖 "Strategy: Low effort, leverages trust, email fits constraints"
+
+Result: Complete growth plan with reasoning
+```
+
+### Enabling Multi-Agent Mode
+```bash
+# Enable multi-agent architecture
+$env:USE_MULTI_AGENT = "true"  # Windows
+export USE_MULTI_AGENT="true"  # Mac/Linux
+
+# Restart server
+uvicorn app.main:app --reload
+```
+
+Check logs to see agents in action:
+```
+INFO: agent.Intake - [cf26769b] Intake: Validating request
+INFO: agent.Analyst - [cf26769b] Revenue opportunity: $6,930.00
+...
+```
+
+**Feature Flag:** Multi-agent mode is optional - the system falls back to monolithic logic if disabled, ensuring zero-downtime deployment.
+
+---
 ---
 
 ## 🛠️ Tech Stack
@@ -57,11 +182,13 @@ flowchart TD
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
 | **Backend Framework** | FastAPI | High-performance async API |
+| **Agent Architecture** | Custom Multi-Agent System | 6 specialized agents with orchestration |
 | **Data Validation** | Pydantic | Type-safe schemas & models |
 | **AI Engine** | Google Gemini 2.0 Flash | LLM-powered strategy generation |
 | **Data Processing** | Pandas | CSV parsing & data transformation |
 | **Storage** | JSONL | Append-only historical logging |
 | **Testing** | Pytest | Unit & integration tests |
+| **Observability** | Python Logging | Agent tracing & debugging |
 | **Documentation** | OpenAPI/Swagger | Auto-generated interactive docs |
 
 ---
@@ -70,26 +197,38 @@ flowchart TD
 ```
 sme-growth-copilot/
 ├── app/
+│   ├── agents/                  # Multi-agent system
+│   │   ├── __init__.py
+│   │   ├── base.py             # BaseAgent & AgentContext
+│   │   ├── intake.py           # Request validation
+│   │   ├── analyst.py          # Funnel diagnosis
+│   │   ├── strategy.py         # Experiment generation
+│   │   ├── scoring.py          # ICE prioritization
+│   │   ├── copywriter.py       # Copy generation
+│   │   └── judge.py            # Winner selection & commentary
 │   ├── __init__.py
-│   ├── main.py              # FastAPI app & endpoints
-│   ├── schemas.py           # Pydantic models (BusinessProfile, GrowthPlan, etc.)
-│   ├── logic.py             # Core business logic & ICE scoring
-│   ├── parsers.py           # CSV parsing & data extraction
-│   ├── llm_strategy.py      # Gemini integration with fallback handling
-│   └── storage.py           # JSONL persistence layer
+│   ├── main.py                 # FastAPI app & endpoints
+│   ├── orchestrator.py         # Multi-agent workflow coordinator
+│   ├── schemas.py              # Pydantic models
+│   ├── logic.py                # Legacy business logic (being phased out)
+│   ├── parsers.py              # CSV parsing & data extraction
+│   ├── llm_strategy.py         # Gemini integration
+│   └── storage.py              # JSONL persistence layer
 ├── data/
-│   └── plan_log.jsonl       # Historical plans (auto-created)
+│   └── plan_log.jsonl          # Historical plans (auto-created)
+├── docs/
+│   └── multi-agent-design.md   # Architecture design document
 ├── examples/
-│   ├── sample_payload.json  # Example JSON request
-│   └── sample_data.csv      # Example CSV upload
+│   ├── sample_payload.json     # Example JSON request
+│   └── sample_data.csv         # Example CSV upload
 ├── tests/
-│   ├── test_logic.py        # Unit tests for funnel analysis
-│   └── test_parsers.py      # Unit tests for CSV parsing
-├── screenshots/             # API documentation images
-├── requirements.txt         # Python dependencies
-├── USAGE.md                 # Detailed usage guide
-├── README.md                # This file
-└── LICENSE                  # MIT License
+│   ├── test_logic.py           # Unit tests for business logic
+│   └── test_parsers.py         # Unit tests for CSV parsing
+├── screenshots/                # API documentation images
+├── requirements.txt            # Python dependencies
+├── USAGE.md                    # Detailed usage guide
+├── README.md                   # This file
+└── LICENSE                     # MIT License
 ```
 
 ---
@@ -433,7 +572,7 @@ gcloud run deploy sme-growth-copilot \
 
 ## 🗺️ Roadmap
 
-### Phase 1: Core System ✅
+### Phase 1: Core System ✅ COMPLETE
 - [x] Funnel analysis engine
 - [x] ICE experiment scoring
 - [x] Gemini integration
@@ -441,29 +580,30 @@ gcloud run deploy sme-growth-copilot \
 - [x] Interactive API docs
 - [x] CSV upload capability
 
-### Phase 2: Intelligence Layer (In Progress)
-- [ ] Multi-agent ADK architecture
-- [ ] Supervisor agent for workflow orchestration
-- [ ] Per-business strategy memory
-- [ ] A/B test result tracking
-- [ ] Experiment outcome analysis
+### Phase 2: Multi-Agent Architecture ✅ COMPLETE
+- [x] 6 specialized AI agents (Intake, Analyst, Strategy, Scoring, Copywriter, Judge)
+- [x] Orchestrator workflow coordination
+- [x] Agent-to-agent communication via AgentContext
+- [x] Trace ID system for debugging
+- [x] Revenue opportunity calculations
+- [x] Comprehensive agent logging
 
-### Phase 3: Enterprise Features (Planned)
+### Phase 3: Enterprise Features (In Progress)
+- [ ] Cloud deployment (Railway / Cloud Run)
 - [ ] PostgreSQL backend with migrations
 - [ ] Real-time KPI ingestion via webhooks
 - [ ] Email campaign integration (SendGrid/Mailgun)
 - [ ] Slack notifications for completed plans
 - [ ] Dashboard UI with analytics
-- [ ] Multi-format data ingestion (Excel, Google Sheets API)
+- [ ] Agent performance monitoring
 
-### Phase 4: Scale & Optimization (Future)
-- [ ] Cloud deployment (Cloud Run / AWS Lambda)
+### Phase 4: Scale & Optimization (Planned)
 - [ ] Rate limiting & API key management
 - [ ] Caching layer for repeated queries
 - [ ] Multi-model LLM support (GPT-4, Claude)
 - [ ] Industry-specific experiment templates
-
----
+- [ ] A/B test result tracking
+- [ ] Per-business strategy memory
 
 ## 🧪 Testing
 ```bash
@@ -582,12 +722,14 @@ AI/ML Product Strategist & Data Scientist | Founder, LuminaMed-AI
 
 ## 📈 Project Stats
 
-- **Lines of Code:** ~1,000
+- **Lines of Code:** ~1,300
+- **Architecture:** 6-agent collaborative system with orchestration
 - **Test Coverage:** 69% (18 tests passing)
-- **API Endpoints:** 4 (JSON, CSV, history, health)
-- **API Response Time:** <500ms (excl. LLM)
+- **API Endpoints:** 4 (JSON input, CSV upload, history, health)
+- **API Response Time:** <1 second (multi-agent workflow)
 - **Supported Input Formats:** JSON, CSV
 - **Supported Industries:** All (customizable experiment templates)
+- **Agent Observability:** Full trace logging with unique IDs
 
 ---
 
