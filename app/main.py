@@ -1,11 +1,13 @@
 import logging
 import os
+import uuid  # ADD THIS
 from fastapi import FastAPI, UploadFile, File
 from .schemas import PlanRequest, GrowthPlan, ExperimentResultUpdate
 from .logic import build_growth_plan
 from .storage import log_plan, load_plans_for_business
 from .parsers import parse_csv_to_plan_request
 from .orchestrator import GrowthCoPilotOrchestrator
+from .integrations.slack_notifier import slack_notifier
 
 # Configure logging to show agent activity
 logging.basicConfig(
@@ -32,6 +34,7 @@ async def create_plan(request: PlanRequest) -> GrowthPlan:
     # Use multi-agent if enabled
     if USE_MULTI_AGENT and orchestrator:
         plan = await orchestrator.execute_plan(request)
+        trace_id = str(uuid.uuid4())[:8]
     else:
         # Use monolithic logic (current system)
         plan = build_growth_plan(
@@ -39,8 +42,13 @@ async def create_plan(request: PlanRequest) -> GrowthPlan:
             kpis=request.kpis,
             goal=request.goal,
         )
+        trace_id = "monolithic"
     
     log_plan(request, plan)
+    
+    # Send Slack notification
+    slack_notifier.send_plan_notification(plan, trace_id)
+    
     return plan
 
 
@@ -52,16 +60,21 @@ async def create_plan_from_csv(file: UploadFile = File(...)) -> GrowthPlan:
     # Use multi-agent if enabled
     if USE_MULTI_AGENT and orchestrator:
         plan = await orchestrator.execute_plan(request)
+        trace_id = str(uuid.uuid4())[:8]
     else:
         plan = build_growth_plan(
             business=request.business_profile,
             kpis=request.kpis,
             goal=request.goal,
         )
+        trace_id = "csv-upload"
     
     log_plan(request, plan)
+    
+    # Send Slack notification
+    slack_notifier.send_plan_notification(plan, trace_id)
+    
     return plan
-
 
 @app.get("/plans/{business_id}")
 def list_plans(business_id: str):
