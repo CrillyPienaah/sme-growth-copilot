@@ -1,7 +1,7 @@
 import logging
 import os
 from fastapi import FastAPI, UploadFile, File
-from .schemas import PlanRequest, GrowthPlan
+from .schemas import PlanRequest, GrowthPlan, ExperimentResultUpdate
 from .logic import build_growth_plan
 from .storage import log_plan, load_plans_for_business
 from .parsers import parse_csv_to_plan_request
@@ -67,6 +67,13 @@ async def create_plan_from_csv(file: UploadFile = File(...)) -> GrowthPlan:
 def list_plans(business_id: str):
     """Return all historical plans for a business."""
     return load_plans_for_business(business_id)
+
+
+@app.post("/experiments/{experiment_id}/result")
+def update_experiment(experiment_id: int, result: ExperimentResultUpdate):
+    """Update experiment result and strategy memory if failed"""
+    from .db_utils import update_experiment_result
+    return update_experiment_result(experiment_id, result)
 
 
 @app.get("/health")
