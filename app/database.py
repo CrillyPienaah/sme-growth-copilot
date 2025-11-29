@@ -1,26 +1,29 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-# Get the connection string from environment variables
-# Set this in your environment: export DATABASE_URL="postgresql://user:password@host:port/dbname"
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://user:password@localhost/sme_copilot_db")
-
-# Create the engine (the actual connection handler)
-engine = create_engine(
-    DATABASE_URL
+# Database URL from environment or default to SQLite for local dev
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "sqlite:///./sme_growth_copilot.db"  # Local SQLite for development
 )
 
-# Create a configured "Session" class
-# This will be the handler you use to talk to the DB
+# For PostgreSQL on Railway, DATABASE_URL will be provided automatically
+# Format: postgresql://user:password@host:port/database
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
+)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base class for your models (ORM definitions)
 Base = declarative_base()
 
+
 def get_db():
-    """Dependency to get a new DB session for each request."""
+    """Dependency for FastAPI endpoints"""
     db = SessionLocal()
     try:
         yield db

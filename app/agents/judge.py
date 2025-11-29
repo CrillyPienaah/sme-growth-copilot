@@ -31,7 +31,7 @@ class JudgeAgent(BaseAgent):
             f"{len(scored_experiments)} candidates"
         )
         
-        # For now, pick the highest scoring (could add AI logic later)
+        # Pick the highest scoring
         winner = scored_experiments[0]
         
         self.log_action(
@@ -59,7 +59,7 @@ class JudgeAgent(BaseAgent):
             f"For {plan.chosen_experiment.experiment.name}"
         )
         
-        # Use enhanced Gemini prompts
+        # Use Gemini prompts
         base_commentary = generate_strategy_commentary(plan)
         
         # Enhance with revenue opportunity from analyst

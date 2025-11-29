@@ -100,9 +100,9 @@ Priority Score: {chosen.priority_score:.1f} (Impact: {chosen.impact}, Confidence
 
 Now explain to the business owner WHY this is their best first move.
 """.strip()
-    
+
     try:
-        response = _client.models.generate_content(  # 🔧 FIX: Proper indentation
+        response = _client.models.generate_content(
             model="gemini-2.0-flash-exp",
             contents=prompt,
         )
@@ -113,7 +113,7 @@ Now explain to the business owner WHY this is their best first move.
             
         return text
         
-    except Exception as e:  # 🔧 FIX: Added error handling
+    except Exception as e:
         # Log the error and return fallback instead of crashing
         print(f"Gemini API error: {e}")
         return fallback_message
