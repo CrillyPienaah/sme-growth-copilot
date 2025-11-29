@@ -59,21 +59,26 @@ class JudgeAgent(BaseAgent):
             f"For {plan.chosen_experiment.experiment.name}"
         )
         
-        # Use Gemini prompts
+        # For now, use standard Gemini (multi-model support coming in Phase 4.2)
         base_commentary = generate_strategy_commentary(plan)
+        context.metadata['llm_model_used'] = "GOOGLE/gemini-2.0-flash-exp"
         
-        # Enhance with revenue opportunity from analyst
+        # Enhance with revenue opportunity
         if context.metadata.get('revenue_opportunity'):
             rev_opp = context.metadata['revenue_opportunity']
             base_commentary += f"\n\n💰 Revenue Opportunity: ${rev_opp:,.2f} if bottleneck is fixed"
         
-        # Add data quality warnings if any
+        # Add data warnings
         if context.metadata.get('data_warnings'):
             warnings = context.metadata['data_warnings']
             base_commentary += f"\n\n⚠️ Data Quality Notes: {'; '.join(warnings)}"
         
         # Add trace
         base_commentary += f"\n[Trace: {context.trace_id}]"
+        
+        # Add model info
+        if context.metadata.get('llm_model_used'):
+            base_commentary += f" | Model: {context.metadata['llm_model_used']}"
         
         self.log_action(
             context,
