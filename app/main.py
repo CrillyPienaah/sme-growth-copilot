@@ -2,7 +2,7 @@ import logging
 import os
 import uuid  # ADD THIS
 from fastapi import FastAPI, UploadFile, File
-from .schemas import PlanRequest, GrowthPlan, ExperimentResultUpdate
+from .schemas import PlanRequest, GrowthPlan, ExperimentResultUpdate, WebhookKpiData, WebhookResponse, BusinessProfile, KpiSnapshot, GrowthGoal
 from .logic import build_growth_plan
 from .storage import log_plan, load_plans_for_business
 from .parsers import parse_csv_to_plan_request
@@ -88,6 +88,111 @@ def update_experiment(experiment_id: int, result: ExperimentResultUpdate):
     from .db_utils import update_experiment_result
     return update_experiment_result(experiment_id, result)
 
+@app.post("/webhook/kpis", response_model=WebhookResponse)
+async def webhook_kpis(webhook_data: WebhookKpiData):
+    """
+    Webhook endpoint for external systems to push KPI data and trigger plan generation.
+    
+    External systems can POST KPI data here to automatically generate growth plans.
+    """
+    try:
+        # Check if business exists in database, create if needed
+        from .db_utils import ensure_business_exists
+        from . import models
+        from .database import SessionLocal
+        
+        # Build business profile from webhook data
+        db = SessionLocal()
+        business = db.query(models.Business).filter(
+            models.Business.business_id == webhook_data.business_id
+        ).first()
+        
+        if business:
+            # Use existing business data
+            business_profile = BusinessProfile(
+                business_id=business.business_id,
+                name=business.name,
+                industry=business.industry,
+                region="Unknown",  # Not stored in current model
+                main_channels=[],
+                tone_of_voice=business.tone
+            )
+        elif webhook_data.business_name and webhook_data.industry:
+            # Create new business from webhook data
+            business_profile = BusinessProfile(
+                business_id=webhook_data.business_id,
+                name=webhook_data.business_name,
+                industry=webhook_data.industry,
+                region=webhook_data.region or "Unknown",
+                main_channels=["Website"],
+                tone_of_voice="professional"
+            )
+            ensure_business_exists(business_profile)
+        else:
+            db.close()
+            return WebhookResponse(
+                success=False,
+                message="Business not found and insufficient data provided to create new business",
+                errors=["Provide business_name and industry for new businesses"]
+            )
+        
+        db.close()
+        
+        # Build KPI snapshot
+        kpis = KpiSnapshot(
+            period=webhook_data.period,
+            visits=webhook_data.visits,
+            leads=webhook_data.leads,
+            signups=webhook_data.signups,
+            purchases=webhook_data.purchases,
+            revenue=webhook_data.revenue,
+            retention_rate=webhook_data.retention_rate
+        )
+        
+        # Build goal
+        goal = GrowthGoal(
+            objective=webhook_data.goal_objective or f"Optimize funnel for {webhook_data.business_id}",
+            horizon_weeks=webhook_data.goal_horizon_weeks or 8
+        )
+        
+        # Create plan request
+        request = PlanRequest(
+            business_profile=business_profile,
+            kpis=kpis,
+            goal=goal
+        )
+        
+        # Generate plan
+        if USE_MULTI_AGENT and orchestrator:
+            plan = await orchestrator.execute_plan(request)
+            trace_id = str(uuid.uuid4())[:8]
+        else:
+            plan = build_growth_plan(
+                business=business_profile,
+                kpis=kpis,
+                goal=goal
+            )
+            trace_id = "webhook"
+        
+        # Log plan
+        log_plan(request, plan)
+        
+        # Send Slack notification
+        slack_notifier.send_plan_notification(plan, trace_id)
+        
+        return WebhookResponse(
+            success=True,
+            message="Growth plan generated successfully from webhook",
+            plan_id=webhook_data.business_id,
+            trace_id=trace_id
+        )
+        
+    except Exception as e:
+        return WebhookResponse(
+            success=False,
+            message="Failed to process webhook",
+            errors=[str(e)]
+        )
 
 @app.get("/health")
 def health_check():

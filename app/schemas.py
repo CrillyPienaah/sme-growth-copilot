@@ -101,7 +101,7 @@ class GrowthPlan(BaseModel):
     model_config = COMMON_MODEL_CONFIG
 
 
-# --- NEW Feedback Loop Schema (Phase 3) ---
+# --- Feedback Loop Schema (Phase 3) ---
 
 class ExperimentResultUpdate(BaseModel):
     """Schema for reporting the outcome of a completed experiment."""
@@ -117,4 +117,40 @@ class ExperimentResultUpdate(BaseModel):
     )
     
     # CORRECT: Use model_config dictionary
+    model_config = COMMON_MODEL_CONFIG
+
+
+# --- Webhook Schemas (Phase 3) ---
+
+class WebhookKpiData(BaseModel):
+    """Schema for KPI data sent via webhook"""
+    business_id: str
+    period: str = "last_30_days"
+    visits: int
+    leads: int
+    signups: int
+    purchases: int
+    revenue: float
+    retention_rate: Optional[float] = None
+    
+    # Optional: business info if not already in system
+    business_name: Optional[str] = None
+    industry: Optional[str] = None
+    region: Optional[str] = None
+    
+    # Optional: goal override
+    goal_objective: Optional[str] = None
+    goal_horizon_weeks: Optional[int] = 8
+    
+    model_config = COMMON_MODEL_CONFIG
+
+
+class WebhookResponse(BaseModel):
+    """Response from webhook endpoint"""
+    success: bool
+    message: str
+    plan_id: Optional[str] = None
+    trace_id: Optional[str] = None
+    errors: Optional[List[str]] = None
+    
     model_config = COMMON_MODEL_CONFIG
