@@ -233,6 +233,22 @@ async def create_plan_with_email(
     
     return plan
 
+@app.get("/monitoring/agents")
+def get_agent_performance(days: int = 7):
+    """Get performance statistics for all agents"""
+    from .monitoring.performance_tracker import PerformanceTracker
+    return {
+        "period_days": days,
+        "agents": PerformanceTracker.get_all_agents_summary(days)
+    }
+
+
+@app.get("/monitoring/agents/{agent_name}")
+def get_specific_agent_performance(agent_name: str, days: int = 7):
+    """Get performance statistics for a specific agent"""
+    from .monitoring.performance_tracker import PerformanceTracker
+    return PerformanceTracker.get_agent_stats(agent_name, days)
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}

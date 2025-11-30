@@ -63,6 +63,21 @@ class GrowthPlan(Base):
     business = relationship("Business", back_populates="plans")
     experiments = relationship("Experiment", back_populates="plan")
 
+class AgentPerformance(Base):
+    """Track agent execution metrics"""
+    __tablename__ = "agent_performance"
+    
+    metric_id = Column(Integer, primary_key=True, index=True)
+    trace_id = Column(String(100), nullable=False, index=True)
+    agent_name = Column(String(50), nullable=False)
+    execution_time_ms = Column(Integer, nullable=False)
+    status = Column(String(20), nullable=False)  # SUCCESS, ERROR
+    error_message = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    
+    # Optional: link to business
+    business_id = Column(String(50), ForeignKey("businesses.business_id"), nullable=True)
+
 # --- EXPERIMENT MODEL (EXISTING) ---
 class Experiment(Base):
     __tablename__ = "experiments"

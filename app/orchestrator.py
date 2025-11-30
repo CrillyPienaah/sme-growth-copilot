@@ -31,26 +31,26 @@ class GrowthCoPilotOrchestrator:
         
         try:
             # Stage 1: Intake - Validate request
-            validated_request = await self.intake.process(request, context)
+            validated_request = await self.intake.process_with_tracking(request, context)
             
             # Stage 2: Analyst - Diagnose funnel
-            insight = await self.analyst.process(validated_request.kpis, context)
+            insight = await self.analyst.process_with_tracking(validated_request.kpis, context)
             
             # Stage 3: Strategist - Propose experiments
-            experiments = await self.strategist.process({
+            experiments = await self.strategist.process_with_tracking({
                 'business': validated_request.business_profile,
                 'goal': validated_request.goal,
                 'insight': insight
             }, context)
             
             # Stage 4: Scorer - Apply ICE framework
-            scored = await self.scorer.process(experiments, context)
+            scored = await self.scorer.process_with_tracking(experiments, context)
             
             # Stage 5: Judge - Select winner
             winner = await self.judge.select_winner(scored, context)
             
             # Stage 6: Copywriter - Generate copy
-            copy = await self.copywriter.process({
+            copy = await self.copywriter.process_with_tracking({
                 'experiment': winner,
                 'business': validated_request.business_profile,
                 'goal': validated_request.goal
