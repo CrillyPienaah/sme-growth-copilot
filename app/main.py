@@ -1,8 +1,11 @@
 import logging
 import os
-import uuid  # ADD THIS
+import uuid
 from typing import List, Optional
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from .schemas import PlanRequest, GrowthPlan, ExperimentResultUpdate, WebhookKpiData, WebhookResponse, BusinessProfile, KpiSnapshot, GrowthGoal
 from .logic import build_growth_plan
 from .storage import log_plan, load_plans_for_business
@@ -21,13 +24,22 @@ logging.basicConfig(
 USE_MULTI_AGENT = os.getenv("USE_MULTI_AGENT", "false").lower() == "true"
 orchestrator = GrowthCoPilotOrchestrator() if USE_MULTI_AGENT else None
 
-
+# Create FastAPI app
 app = FastAPI(
     title="SME Growth Co-Pilot",
     description="Enterprise agent that turns SME KPIs into a ranked growth plan.",
     version="0.1.0",
 )
 
+# Mount static files and templates
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+templates = Jinja2Templates(directory="app/templates")
+
+
+@app.get("/", response_class=HTMLResponse)
+async def dashboard_home(request: Request):
+    """Serve the main dashboard"""
+    return templates.TemplateResponse("dashboard.html", {"request": request})
 
 @app.post("/plan", response_model=GrowthPlan)
 async def create_plan(
