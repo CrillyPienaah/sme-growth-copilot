@@ -470,7 +470,7 @@ MIT License - Copyright (c) 2025 Christopher Crilly Pienaah
 
 **Christopher Crilly Pienaah**  
 Master's in Analytics @ Northeastern University (GPA: 3.96)  
-AI/ML Product Strategist | Founder, LuminaMed-AI
+AI/ML Product Strategist | Data Scientist | Founder, LuminaMed-AI
 
 - LinkedIn: [Christopher Crilly Pienaah](https://www.linkedin.com/in/christopher-crilly-pienaah)
 - GitHub: [@CrillyPienaah](https://github.com/CrillyPienaah)
