@@ -1,6 +1,7 @@
 import logging
 import os
 import uuid  # ADD THIS
+from typing import List, Optional
 from fastapi import FastAPI, UploadFile, File
 from .schemas import PlanRequest, GrowthPlan, ExperimentResultUpdate, WebhookKpiData, WebhookResponse, BusinessProfile, KpiSnapshot, GrowthGoal
 from .logic import build_growth_plan
@@ -8,6 +9,7 @@ from .storage import log_plan, load_plans_for_business
 from .parsers import parse_csv_to_plan_request
 from .orchestrator import GrowthCoPilotOrchestrator
 from .integrations.slack_notifier import slack_notifier
+from .integrations.email_notifier import email_notifier
 
 # Configure logging to show agent activity
 logging.basicConfig(
@@ -28,7 +30,11 @@ app = FastAPI(
 
 
 @app.post("/plan", response_model=GrowthPlan)
-async def create_plan(request: PlanRequest) -> GrowthPlan:
+async def create_plan(
+    request: PlanRequest,
+    send_email: bool = False,
+    recipient_emails: Optional[List[str]] = None
+) -> GrowthPlan:
     """Create a growth plan and log it."""
     
     # Use multi-agent if enabled
@@ -48,6 +54,10 @@ async def create_plan(request: PlanRequest) -> GrowthPlan:
     
     # Send Slack notification
     slack_notifier.send_plan_notification(plan, trace_id)
+    
+    # Send email notification if requested
+    if send_email and recipient_emails:
+        email_notifier.send_plan_email(plan, trace_id, recipient_emails)
     
     return plan
 
@@ -193,6 +203,35 @@ async def webhook_kpis(webhook_data: WebhookKpiData):
             message="Failed to process webhook",
             errors=[str(e)]
         )
+
+@app.post("/plan/with-email", response_model=GrowthPlan)
+async def create_plan_with_email(
+    request: PlanRequest,
+    recipient_emails: List[str]
+) -> GrowthPlan:
+    """Create a growth plan and send via email."""
+    
+    # Use multi-agent if enabled
+    if USE_MULTI_AGENT and orchestrator:
+        plan = await orchestrator.execute_plan(request)
+        trace_id = str(uuid.uuid4())[:8]
+    else:
+        plan = build_growth_plan(
+            business=request.business_profile,
+            kpis=request.kpis,
+            goal=request.goal,
+        )
+        trace_id = "monolithic"
+    
+    log_plan(request, plan)
+    
+    # Send Slack notification
+    slack_notifier.send_plan_notification(plan, trace_id)
+    
+    # Send email notification
+    email_notifier.send_plan_email(plan, trace_id, recipient_emails)
+    
+    return plan
 
 @app.get("/health")
 def health_check():
