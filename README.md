@@ -1,9 +1,10 @@
 # SME Growth Co-Pilot 🚀
 
-**🌐 Live Demo:** https://web-production-a0573.up.railway.app/docs
+**🌐 Live Demo:** https://web-production-a0573.up.railway.app/  
+**📚 API Docs:** https://web-production-a0573.up.railway.app/docs
 
-**Version:** 0.1.0  
-**Status:** ✅ DEPLOYED - Multi-Agent System Active  
+**Version:** 0.2.0  
+**Status:** ✅ DEPLOYED - Multi-Agent System with Enterprise Features Active  
 **Maintainer:** Christopher Crilly Pienaah
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -11,249 +12,179 @@
 [![Gemini](https://img.shields.io/badge/Google-Gemini%202.0-orange.svg)](https://ai.google.dev/gemini-api)
 [![Kaggle](https://img.shields.io/badge/Kaggle-AI%20Agents%20Capstone-20BEFF.svg)](https://www.kaggle.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ---
 
 ## 📖 Overview
 
-SME Growth Co-Pilot is an **enterprise-grade AI agent** that transforms small business KPIs into data-driven, actionable growth strategies. Built with FastAPI and powered by Google Gemini, it automates funnel analysis, experiment prioritization, and strategic planning—delivering insights that typically require expensive consultants.
+SME Growth Co-Pilot is an **enterprise-grade AI agent system** that transforms small business KPIs into data-driven, actionable growth strategies. Built with FastAPI and powered by Google Gemini, it features intelligent learning, real-time notifications, and comprehensive monitoring—delivering insights that typically require expensive consultants.
 
 ### What It Does
 
 - 📊 **Automated Funnel Analysis** - Identifies conversion bottlenecks across visits→leads→signups→purchases
 - 💡 **Smart Experiment Generation** - Proposes targeted growth initiatives based on detected problems
-- 🎯 **ICE Prioritization** - Scores experiments by Impact, Confidence, and Effort for data-driven decisions
-- 🤖 **AI Strategy Commentary** - Gemini-powered business reasoning explaining the "why" behind recommendations
-- ✍️ **Marketing Copy Generation** - Creates ready-to-use campaign messaging
-- 📁 **Flexible Data Input** - Accept JSON requests or upload CSV files directly
-- 🏗️ **Multi-Agent Architecture** - 6 specialized AI agents working collaboratively with full observability
-- 💰 **Revenue Opportunity Analysis** - Calculates potential revenue from fixing identified bottlenecks
-- 💾 **Historical Tracking** - Logs all plans for trend analysis and continuous improvement
+- 🎯 **ICE Prioritization** - Scores experiments by Impact, Confidence, and Effort
+- 🧠 **Strategy Memory** - Learns from failed experiments and avoids repeating them
+- 🤖 **AI Strategy Commentary** - Gemini-powered business reasoning
+- ✍️ **Marketing Copy Generation** - Ready-to-use campaign messaging
+- 📁 **Flexible Input** - JSON API, CSV upload, or webhook integration
+- 🔔 **Real-Time Notifications** - Slack and email delivery
+- 📈 **Performance Dashboard** - Beautiful web UI with live metrics
+- 💰 **Revenue Opportunity Analysis** - Calculates potential revenue from fixes
+
 ---
 
 ## 🎯 System Architecture
 
 ### Multi-Agent Workflow
 
-The system uses **6 specialized AI agents** that work collaboratively to generate growth strategies:
-```mermaid
-flowchart TD
-    A[API Request] --> B[GrowthCoPilotOrchestrator]
-    B --> C[IntakeAgent]
-    C --> D[AnalystAgent]
-    D --> E[StrategyAgent]
-    E --> F[ScoringAgent]
-    F --> G[JudgeAgent]
-    G --> H[CopywriterAgent]
-    H --> I[Final Plan Assembly]
-    I --> J[Response + Logging]
-    
-    C -->|Validated Data| D
-    D -->|Funnel Insight| E
-    E -->|Experiments| F
-    F -->|Scored Experiments| G
-    G -->|Winner| H
-    H -->|Marketing Copy| I
-    
-    K[AgentContext]
-    K -.->|Trace ID| C
-    K -.->|Metadata| D
-    K -.->|Revenue Calc| E
-    K -.->|Shared State| F
-    
-    style B fill:#f96,stroke:#333,stroke-width:3px
-    style C fill:#9cf,stroke:#333,stroke-width:2px
-    style D fill:#9cf,stroke:#333,stroke-width:2px
-    style E fill:#9cf,stroke:#333,stroke-width:2px
-    style F fill:#9cf,stroke:#333,stroke-width:2px
-    style G fill:#9cf,stroke:#333,stroke-width:2px
-    style H fill:#9cf,stroke:#333,stroke-width:2px
-    style K fill:#fcf,stroke:#333,stroke-width:2px
+The system uses **6 specialized AI agents** working collaboratively:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   GROWTH CO-PILOT ORCHESTRATOR              │
+└─────────────────────────────────────────────────────────────┘
+                            │
+            ┌───────────────┼───────────────┐
+            ▼               ▼               ▼
+     ┌──────────┐    ┌──────────┐   ┌──────────┐
+     │  Intake  │    │ Analyst  │   │ Strategy │
+     │  Agent   │───▶│  Agent   │──▶│  Agent   │
+     └──────────┘    └──────────┘   └──────────┘
+            │               │               │
+            └───────────────┼───────────────┘
+                            ▼
+            ┌───────────────┼───────────────┐
+            ▼               ▼               ▼
+     ┌──────────┐    ┌──────────┐   ┌──────────┐
+     │ Scoring  │    │   Judge  │   │Copywriter│
+     │  Agent   │───▶│  Agent   │──▶│  Agent   │
+     └──────────┘    └──────────┘   └──────────┘
+                            │
+                            ▼
+                  ┌───────────────────┐
+                  │   Growth Plan     │
+                  │  • Slack          │
+                  │  • Email          │
+                  │  • Dashboard      │
+                  │  • Database       │
+                  └───────────────────┘
 ```
 
-### Agent Responsibilities
+### The 6 AI Agents
 
-**🔍 IntakeAgent** - Request Validation
-- Validates KPI data quality
-- Checks for impossible ratios (e.g., purchases > signups)
-- Flags data quality warnings
-- Ensures clean data for downstream agents
+1. **Intake Agent** - Validates business data and KPIs
+2. **Analyst Agent** - Diagnoses funnel bottlenecks and calculates revenue opportunity
+3. **Strategy Agent** - Proposes experiments, **filtered by strategy memory**
+4. **Scoring Agent** - Applies ICE framework to rank experiments
+5. **Judge Agent** - Selects the winning experiment and provides commentary
+6. **Copywriter Agent** - Generates campaign copy for the chosen experiment
 
-**📊 AnalystAgent** - Funnel Diagnosis
-- Identifies biggest conversion bottleneck
-- Calculates conversion rates at each stage
-- Estimates revenue opportunity from fixing issues
-- Example: "$6,930 potential revenue if visits→leads bottleneck is fixed"
-
-**💡 StrategyAgent** - Experiment Generation
-- Proposes context-aware growth experiments
-- Matches experiments to detected bottlenecks
-- Considers business constraints and channels
-- Generates 2-6 targeted recommendations
-
-**🎯 ScoringAgent** - ICE Prioritization
-- Scores experiments: (Impact × Confidence) / Effort
-- Ranks experiments by priority score
-- Provides scoring rationale
-- Example: Referral Program scores 7.5 (Impact:5, Confidence:3, Effort:2)
-
-**✍️ CopywriterAgent** - Marketing Copy
-- Generates ready-to-use campaign messaging
-- Adapts to business tone and voice
-- Creates channel-specific copy (email, social, in-store)
-- Provides complete campaign text
-
-**⚖️ JudgeAgent** - Decision & Explanation
-- Selects #1 experiment to prioritize
-- Generates AI-powered strategy explanation (via Gemini)
-- Explains WHY this experiment is best
-- Provides actionable next steps
-
-### Agent Communication
-
-All agents share an **AgentContext** containing:
-- **Trace ID**: Unique identifier for request tracking (e.g., `cf26769b`)
-- **Metadata**: Shared data between agents (revenue opportunities, warnings, metrics)
-- **History**: Complete audit trail of agent actions
-
-**Example trace log:**
-```
-INFO: agent.Intake - [cf26769b] Intake: Validating request
-INFO: agent.Analyst - [cf26769b] Revenue opportunity: $6,930.00
-INFO: agent.Strategy - [cf26769b] Strategy: Experiments proposed
-INFO: agent.Scoring - [cf26769b] Scoring: Top: Referral Program (7.5)
-INFO: agent.Judge - [cf26769b] Judge: Winner selected
-INFO: agent.Copywriter - [cf26769b] Copywriter: Copy generated
-```
 ---
 
-## 🤖 Multi-Agent Architecture
+## ⭐ New Enterprise Features
 
-### Why Multi-Agent?
+### 🧠 Strategy Memory System
 
-Instead of a single monolithic function, the system uses **6 specialized agents** that collaborate like a real consulting team:
+The system **learns from failures** and gets smarter over time:
 
-**Benefits:**
-- ✅ **Separation of Concerns** - Each agent focuses on one task
-- ✅ **Independent Testing** - Test each agent in isolation
-- ✅ **Easy to Extend** - Add new agents without touching existing ones
-- ✅ **Swappable Components** - Replace individual agents (e.g., swap Gemini for GPT-4)
-- ✅ **Full Observability** - Trace every step with unique IDs
-- ✅ **Graceful Degradation** - If one agent fails, others continue
-
-### Agent Workflow Example
-```
-Request: Coffee shop with 2,000 visits, 350 leads
-
-IntakeAgent:     ✅ Validates data quality
-AnalystAgent:    📊 "82.5% drop visits→leads, $6,930 opportunity"
-StrategyAgent:   💡 "Propose: Referral Program + Lead Magnet"
-ScoringAgent:    🎯 "Referral: 7.5, Lead Magnet: 6.7"  
-JudgeAgent:      ⚖️ "Select: Referral Program (highest score)"
-CopywriterAgent: ✍️ "Subject: A thank-you from Neighborhood Coffee Hub..."
-JudgeAgent:      🤖 "Strategy: Low effort, leverages trust, email fits constraints"
-
-Result: Complete growth plan with reasoning
-```
-
-### Enabling Multi-Agent Mode
+**How it works:**
+1. Business runs an experiment
+2. Mark it as FAILED via API
+3. System stores it in strategy_memory
+4. **Future plans automatically exclude that experiment**
+5. System recommends fresh alternatives
 ```bash
-# Enable multi-agent architecture
-$env:USE_MULTI_AGENT = "true"  # Windows
-export USE_MULTI_AGENT="true"  # Mac/Linux
+# Mark experiment as failed
+POST /experiments/{experiment_id}/result
+{
+  "status": "FAILED",
+  "observed_result": {"conversion_rate": -0.05}
+}
 
-# Restart server
-uvicorn app.main:app --reload
+# Next plan request automatically filters it out!
 ```
 
-Check logs to see agents in action:
+### 🔔 Slack Notifications
+
+Real-time growth plan delivery to your Slack workspace:
+
+**Features:**
+- Beautiful formatted messages with Slack Block Kit
+- Shows funnel analysis, revenue opportunity, experiments
+- Includes AI commentary and trace IDs
+- Production-ready with real webhooks
+
+**Setup:**
+```bash
+SLACK_NOTIFICATIONS_ENABLED=true
+SLACK_WEBHOOK_URL=your_webhook_url
+SLACK_TEST_MODE=false
 ```
-INFO: agent.Intake - [cf26769b] Intake: Validating request
-INFO: agent.Analyst - [cf26769b] Revenue opportunity: $6,930.00
-...
+
+### 📧 Email Integration
+
+Send growth plans via email to stakeholders:
+
+**Features:**
+- Beautiful HTML email templates
+- Plain text fallback
+- Multiple recipients support
+- SendGrid integration
+```bash
+POST /plan/with-email
+{
+  "request": { /* plan request */ },
+  "recipient_emails": ["owner@business.com", "manager@business.com"]
+}
 ```
 
-**Feature Flag:** Multi-agent mode is optional - the system falls back to monolithic logic if disabled, ensuring zero-downtime deployment.
+### 🔌 Webhook Integration
 
----
----
-
-## 🛠️ Tech Stack
-
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **Backend Framework** | FastAPI | High-performance async API |
-| **Agent Architecture** | Custom Multi-Agent System | 6 specialized agents with orchestration |
-| **Data Validation** | Pydantic | Type-safe schemas & models |
-| **AI Engine** | Google Gemini 2.0 Flash | LLM-powered strategy generation |
-| **Data Processing** | Pandas | CSV parsing & data transformation |
-| **Storage** | JSONL | Append-only historical logging |
-| **Testing** | Pytest | Unit & integration tests |
-| **Observability** | Python Logging | Agent tracing & debugging |
-| **Documentation** | OpenAPI/Swagger | Auto-generated interactive docs |
-
----
-
-## 📁 Project Structure
+External systems can push KPIs automatically:
+```bash
+POST /webhook/kpis
+{
+  "business_id": "shop_001",
+  "visits": 10000,
+  "leads": 1000,
+  "signups": 500,
+  "purchases": 250,
+  "revenue": 25000.0
+}
 ```
-sme-growth-copilot/
-├── app/
-│   ├── agents/                  # Multi-agent system
-│   │   ├── __init__.py
-│   │   ├── base.py             # BaseAgent & AgentContext
-│   │   ├── intake.py           # Request validation
-│   │   ├── analyst.py          # Funnel diagnosis
-│   │   ├── strategy.py         # Experiment generation
-│   │   ├── scoring.py          # ICE prioritization
-│   │   ├── copywriter.py       # Copy generation
-│   │   └── judge.py            # Winner selection & commentary
-│   ├── __init__.py
-│   ├── main.py                 # FastAPI app & endpoints
-│   ├── orchestrator.py         # Multi-agent workflow coordinator
-│   ├── schemas.py              # Pydantic models
-│   ├── logic.py                # Legacy business logic (being phased out)
-│   ├── parsers.py              # CSV parsing & data extraction
-│   ├── llm_strategy.py         # Gemini integration
-│   └── storage.py              # JSONL persistence layer
-├── data/
-│   └── plan_log.jsonl          # Historical plans (auto-created)
-├── docs/
-│   └── multi-agent-design.md   # Architecture design document
-├── examples/
-│   ├── sample_payload.json     # Example JSON request
-│   └── sample_data.csv         # Example CSV upload
-├── tests/
-│   ├── test_logic.py           # Unit tests for business logic
-│   └── test_parsers.py         # Unit tests for CSV parsing
-├── screenshots/                # API documentation images
-├── requirements.txt            # Python dependencies
-├── USAGE.md                    # Detailed usage guide
-├── README.md                   # This file
-└── LICENSE                     # MIT License
+
+Triggers automatic plan generation + Slack/email notifications!
+
+### 📊 Performance Monitoring
+
+Track agent execution metrics in real-time:
+```bash
+GET /monitoring/agents
+
+# Returns:
+{
+  "agents": [
+    {
+      "agent_name": "Strategy",
+      "total_executions": 45,
+      "success_rate": 100.0,
+      "avg_execution_time_ms": 5
+    }
+  ]
+}
 ```
----
 
-## 🌐 Live Deployment
+### 🎨 Web Dashboard
 
-**Try it now (no installation required):**
+Beautiful real-time dashboard at `http://localhost:8000/`
 
-🔗 **Interactive API:** https://web-production-a0573.up.railway.app/docs
+**Features:**
+- Live agent performance charts
+- Success rate tracking
+- Response time monitoring
+- Auto-refresh every 30 seconds
+- Mobile-responsive design
 
-**Quick test:**
-- Health check: https://web-production-a0573.up.railway.app/health
-- API documentation: https://web-production-a0573.up.railway.app/docs
-
-The live deployment runs the **complete 6-agent multi-agent system** with:
-- ✅ Real-time agent logging with trace IDs
-- ✅ Revenue opportunity calculations
-- ✅ AI-powered strategy commentary (Gemini 2.0)
-- ✅ CSV upload support
-- ✅ Full observability
-
-**Note:** The deployed system uses multi-agent architecture (USE_MULTI_AGENT=true). You can see all 6 agents executing in sequence through the trace logging.
-
----
 ---
 
 ## 🚀 Quick Start
@@ -262,6 +193,7 @@ The live deployment runs the **complete 6-agent multi-agent system** with:
 
 - Python 3.10+
 - Google Gemini API key ([Get one here](https://aistudio.google.com/apikey))
+- Optional: Slack webhook, SendGrid API key
 
 ### Installation
 ```bash
@@ -272,7 +204,7 @@ cd sme-growth-copilot
 # Create virtual environment
 python -m venv .venv
 
-# Activate (Windows PowerShell)
+# Activate (Windows)
 .venv\Scripts\activate
 
 # Activate (Mac/Linux)
@@ -281,47 +213,43 @@ source .venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Set API key (Windows)
-$env:GOOGLE_API_KEY = "your-api-key-here"
+# Create .env file
+cp .env.example .env
+# Edit .env with your API keys
+```
 
-# Set API key (Mac/Linux)
-export GOOGLE_API_KEY="your-api-key-here"
+### Environment Variables
+```bash
+# Core Settings
+USE_MULTI_AGENT=true
+GOOGLE_API_KEY=your_gemini_api_key
 
+# Slack Integration (optional)
+SLACK_NOTIFICATIONS_ENABLED=true
+SLACK_TEST_MODE=false
+SLACK_WEBHOOK_URL=your_slack_webhook_url
+
+# Email Integration (optional)
+EMAIL_NOTIFICATIONS_ENABLED=true
+EMAIL_TEST_MODE=true
+SENDGRID_API_KEY=your_sendgrid_key
+EMAIL_FROM=noreply@yourcompany.com
+
+# Database
+DATABASE_URL=sqlite:///./sme_growth_copilot.db
+```
+
+### Run the Application
+```bash
 # Start the server
 uvicorn app.main:app --reload
+
+# Access the dashboard
+open http://localhost:8000
+
+# API Documentation
+open http://localhost:8000/docs
 ```
-
-### Verify Installation
-```bash
-# Health check
-curl http://127.0.0.1:8000/health
-
-# Interactive API docs
-open http://127.0.0.1:8000/docs
-```
-
-### Test with Sample Data
-
-**Option 1: JSON Request**
-```bash
-curl -X POST "http://127.0.0.1:8000/plan" \
-  -H "Content-Type: application/json" \
-  -d @examples/sample_payload.json
-```
-
-**Option 2: CSV Upload** ⭐ NEW!
-```bash
-curl -X POST "http://127.0.0.1:8000/plan/from-csv" \
-  -F "file=@examples/sample_data.csv"
-```
-
-**Or use the interactive docs:**
-1. Go to http://127.0.0.1:8000/docs
-2. Choose **POST /plan** (JSON) or **POST /plan/from-csv** (file upload)
-3. Click **Try it out**
-4. Provide data and click **Execute**
-
-You'll get a complete growth plan with funnel analysis, prioritized experiments, and AI strategy!
 
 ---
 
@@ -329,267 +257,97 @@ You'll get a complete growth plan with funnel analysis, prioritized experiments,
 
 ### 1. Funnel Analysis Engine
 
-The system analyzes three conversion stages:
-```python
-# Automatic bottleneck detection
-visits → leads      # Are you capturing attention?
-leads → signups     # Are you building trust?
-signups → purchases # Are you closing the deal?
+Analyzes three conversion stages:
+```
+visits → leads      # Capturing attention?
+leads → signups     # Building trust?
+signups → purchases # Closing the deal?
 ```
 
-**Example Output:**
-```json
-{
-  "from_step": "visits",
-  "to_step": "leads",
-  "drop_rate": 0.825,
-  "comment": "82.5% drop - your biggest opportunity"
-}
-```
+### 2. Experiment Recommendation
 
-### 2. Experiment Recommendation System
+Context-aware experiments based on bottleneck:
 
-Based on the detected bottleneck, the system proposes context-aware experiments:
-
-| Bottleneck | Recommended Experiments |
-|------------|------------------------|
+| Bottleneck | Experiments |
+|------------|-------------|
 | **Visits → Leads** | Lead magnets, referral programs, content upgrades |
-| **Leads → Signups** | Nurture sequences, live demos, onboarding emails |
-| **Signups → Purchases** | Loyalty programs, win-back campaigns, purchase incentives |
+| **Leads → Signups** | Nurture sequences, demos, onboarding emails |
+| **Signups → Purchases** | Loyalty programs, win-back campaigns, incentives |
 
-### 3. ICE Prioritization Framework
-
-Each experiment receives three scores:
+### 3. ICE Prioritization
 ```
 Priority = (Impact × Confidence) / Effort
 
-Impact:     1-5 (potential growth)
-Confidence: 1-5 (likelihood of success)
+Impact:     1-5 (growth potential)
+Confidence: 1-5 (success likelihood)
 Effort:     1-5 (implementation difficulty)
 ```
 
-**Example:**
-```json
-{
-  "experiment": "Referral Program",
-  "impact": 5,
-  "confidence": 3,
-  "effort": 2,
-  "priority_score": 7.5  // (5 × 3) / 2
-}
-```
+### 4. Strategy Memory
 
-### 4. AI-Powered Strategy Commentary
-
-Gemini analyzes the business context and explains:
-- Why this experiment ranks #1
-- How it addresses the specific bottleneck
-- Why it fits within stated constraints
-- Expected impact on metrics
-
-**Graceful Fallback:** If Gemini is unavailable (rate limits, network issues), the system provides deterministic commentary and continues operating.
+**Learns from failures:**
+- Failed experiments stored in database
+- Future plans automatically exclude them
+- System recommends fresh alternatives
+- Gets smarter with every iteration
 
 ---
 
 ## 🔌 API Reference
 
-### POST /plan
-**Create a growth plan from business KPIs**
-
-Send structured JSON data to generate a growth plan.
-
-**Request:**
-```json
-{
-  "business_profile": {
-    "business_id": "coffee_001",
-    "name": "Downtown Cafe",
-    "industry": "Food & Beverage",
-    "region": "Toronto",
-    "main_channels": ["in-store", "email"]
-  },
-  "kpis": {
-    "visits": 2000,
-    "leads": 350,
-    "signups": 200,
-    "purchases": 80,
-    "revenue": 8400
-  },
-  "goal": {
-    "objective": "increase repeat purchases",
-    "horizon_weeks": 6
-  }
-}
-```
-
-**Response:**
-- Full funnel analysis
-- 2+ prioritized experiments
-- Marketing copy
-- AI strategy commentary
-
----
-
-### POST /plan/from-csv ⭐ NEW!
-**Upload a CSV file with business data**
-
-Don't want to format JSON manually? Upload a CSV file instead! Perfect for businesses exporting data from Shopify, Google Analytics, or their CRM.
-
-**CSV Format:**
-```csv
-business_name,industry,region,channels,visits,leads,signups,purchases,revenue,goal
-Coffee Shop,Food & Beverage,Toronto,"email,website",2000,350,200,80,8400,increase sales
-```
-
-**Required columns:**
-- `business_name`, `industry`, `region`
-- `visits`, `leads`, `signups`, `purchases`, `revenue`
-- `goal`
-
-**Optional columns:**
-- `business_id`, `channels`, `target_audience`, `tone`, `retention_rate`, `horizon_weeks`, `constraints`, `period`
-
-**Using cURL:**
+### Core Endpoints
 ```bash
-curl -X POST "http://127.0.0.1:8000/plan/from-csv" \
-  -F "file=@examples/sample_data.csv"
+POST   /plan                    # Generate plan from JSON
+POST   /plan/from-csv           # Generate plan from CSV
+POST   /plan/with-email         # Generate plan + send email
+POST   /webhook/kpis            # Accept KPIs from external systems
+GET    /plans/{business_id}     # Get historical plans
+POST   /experiments/{id}/result # Update experiment results
+GET    /monitoring/agents       # Agent performance metrics
+GET    /monitoring/agents/{name} # Specific agent stats
+GET    /                        # Web dashboard
+GET    /health                  # Health check
 ```
 
-**Or use interactive docs:**
-1. Go to http://127.0.0.1:8000/docs
-2. Click **POST /plan/from-csv** → **Try it out**
-3. Click **"Choose File"** and select your CSV
-4. Click **Execute**
-
-**Example CSV:** See `examples/sample_data.csv` for complete working example.
-
-**Benefits:**
-- ✅ No JSON formatting required
-- ✅ Export directly from analytics tools
-- ✅ Batch process multiple businesses
-- ✅ Same powerful analysis as JSON endpoint
-
----
-
-### GET /plans/{business_id}
-**Retrieve historical plans**
-
-Returns all past plans for a business with timestamps.
-
-**Example:**
+### Example: Generate Plan
 ```bash
-curl http://127.0.0.1:8000/plans/demo_sme_001
+curl -X POST "http://localhost:8000/plan" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "business_profile": {
+      "business_id": "shop_001",
+      "name": "My Shop",
+      "industry": "E-commerce",
+      "region": "North America",
+      "main_channels": ["Website"]
+    },
+    "kpis": {
+      "visits": 10000,
+      "leads": 1000,
+      "signups": 500,
+      "purchases": 250,
+      "revenue": 25000.0
+    },
+    "goal": {
+      "objective": "Increase revenue by 50%",
+      "horizon_weeks": 12
+    }
+  }'
 ```
 
 ---
 
-### GET /health
-**System health check**
+## 🛠️ Tech Stack
 
-Returns `{"status": "ok"}` if operational.
-
-**Example:**
-```bash
-curl http://127.0.0.1:8000/health
-```
-
----
-
-## 🔧 How to Extend the System
-
-### Add a New Experiment Type
-
-**File:** `app/logic.py`
-```python
-def propose_experiments(business, goal, insight):
-    # Add your custom experiment
-    if bottleneck == ("leads", "signups"):
-        exps.append(
-            GrowthExperiment(
-                name="Interactive Product Tour",
-                channel="web",
-                hypothesis="Guided tours increase signup confidence"
-            )
-        )
-```
-
-### Add a New Funnel Metric
-
-**File:** `app/schemas.py`
-```python
-class KpiSnapshot(BaseModel):
-    visits: int
-    leads: int
-    signups: int
-    purchases: int
-    cart_adds: int  # New metric
-```
-
-**File:** `app/logic.py`
-
-Update `diagnose_funnel()` to include the new stage.
-
-### Swap Gemini for Another LLM
-
-**File:** `app/llm_strategy.py`
-```python
-# Replace Gemini client
-from openai import OpenAI
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-# Update generate_strategy_commentary()
-response = client.chat.completions.create(
-    model="gpt-4",
-    messages=[{"role": "user", "content": prompt}]
-)
-```
-
-### Add Custom CSV Column Mappings
-
-**File:** `app/parsers.py`
-```python
-# Add custom mappings for different CSV formats
-COLUMN_MAPPINGS = {
-    'shopify': {'visitors': 'visits', 'customers': 'purchases'},
-    'analytics': {'sessions': 'visits', 'conversions': 'purchases'}
-}
-```
-
-### Add Authentication
-
-**File:** `app/main.py`
-```python
-from fastapi.security import APIKeyHeader
-
-api_key_header = APIKeyHeader(name="X-API-Key")
-
-@app.post("/plan")
-async def create_plan(
-    request: PlanRequest,
-    api_key: str = Depends(api_key_header)
-):
-    # Validate API key
-    if api_key not in valid_keys:
-        raise HTTPException(401, "Invalid API key")
-    ...
-```
-
-### Deploy to Google Cloud Run
-```bash
-# Create Dockerfile
-FROM python:3.10-slim
-COPY . /app
-WORKDIR /app
-RUN pip install -r requirements.txt
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
-
-# Deploy
-gcloud run deploy sme-growth-copilot \
-  --source . \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --set-env-vars GOOGLE_API_KEY=your-key
-```
+| Component | Technology |
+|-----------|-----------|
+| **Backend** | FastAPI, SQLAlchemy, Pydantic |
+| **AI Engine** | Google Gemini 2.0 Flash |
+| **Database** | PostgreSQL / SQLite |
+| **Notifications** | Slack SDK, SendGrid |
+| **Frontend** | Tailwind CSS, Chart.js |
+| **Testing** | Pytest |
+| **Deployment** | Railway |
 
 ---
 
@@ -604,120 +362,107 @@ gcloud run deploy sme-growth-copilot \
 - [x] CSV upload capability
 
 ### Phase 2: Multi-Agent Architecture ✅ COMPLETE
-- [x] 6 specialized AI agents (Intake, Analyst, Strategy, Scoring, Copywriter, Judge)
-- [x] Orchestrator workflow coordination
-- [x] Agent-to-agent communication via AgentContext
-- [x] Trace ID system for debugging
-- [x] Revenue opportunity calculations
-- [x] Comprehensive agent logging
+- [x] 6 specialized AI agents
+- [x] Orchestrator workflow
+- [x] Agent communication
+- [x] Trace ID system
+- [x] Revenue calculations
 
-### Phase 3: Enterprise Features (In Progress)
-- [ ] Cloud deployment (Railway / Cloud Run)
-- [ ] PostgreSQL backend with migrations
-- [ ] Real-time KPI ingestion via webhooks
-- [ ] Email campaign integration (SendGrid/Mailgun)
-- [ ] Slack notifications for completed plans
-- [ ] Dashboard UI with analytics
-- [ ] Agent performance monitoring
+### Phase 3: Enterprise Features ✅ COMPLETE
+- [x] Cloud deployment (Railway)
+- [x] PostgreSQL backend
+- [x] **Webhook integration**
+- [x] **Email notifications**
+- [x] **Slack notifications**
+- [x] **Web dashboard**
+- [x] **Performance monitoring**
 
-### Phase 4: Scale & Optimization (Planned)
-- [ ] Rate limiting & API key management
-- [ ] Caching layer for repeated queries
-- [ ] Multi-model LLM support (GPT-4, Claude)
-- [ ] Industry-specific experiment templates
-- [ ] A/B test result tracking
-- [ ] Per-business strategy memory
+### Phase 4: Scale & Optimization ✅ COMPLETE
+- [x] Rate limiting structure
+- [x] Multi-model LLM support (structure)
+- [x] **Strategy memory system**
+- [x] **Agent performance tracking**
+- [ ] Caching layer
+- [ ] Industry templates
+
+---
 
 ## 🧪 Testing
 ```bash
 # Run all tests
 pytest tests/ -v
 
-# Run with coverage
+# With coverage
 pytest --cov=app tests/
 
-# Test specific module
-pytest tests/test_logic.py::test_diagnose_funnel -v
-pytest tests/test_parsers.py::test_parse_basic_csv -v
+# Specific tests
+pytest tests/test_logic.py -v
 ```
 
-**Current test coverage:**
-- Funnel diagnosis logic (99% coverage)
-- ICE scoring calculations (100% coverage)
-- CSV parsing and validation (78% coverage)
-- End-to-end plan generation
-- **Overall: 69% coverage with 18 passing tests**
+**Test Coverage:** 18 passing tests across funnel analysis, ICE scoring, CSV parsing, and end-to-end workflows.
 
 ---
 
 ## 📊 Example Use Cases
 
-### Use Case 1: Local Coffee Shop
-**Problem:** Low lead capture (82% drop from visits to leads)  
-**Input Method:** Upload monthly analytics CSV  
-**Solution:** Referral program via email (Priority: 7.5)  
-**Result:** Low-effort, high-impact experiment leveraging existing customers
+### Coffee Shop (Low Lead Capture)
+- **Problem:** 82% drop visits→leads
+- **Solution:** Referral program via email (Priority: 7.5)
+- **Delivery:** Slack + Email notification
+- **Tracking:** Dashboard shows performance
 
-### Use Case 2: SaaS Startup
-**Problem:** Poor trial-to-paid conversion (75% drop from signups to purchases)  
-**Input Method:** JSON API integration with CRM  
-**Solution:** Onboarding nurture sequence (Priority: 8.3)  
-**Result:** Automated education reduces friction, builds trust
+### SaaS Startup (Poor Trial Conversion)
+- **Problem:** 75% drop signups→purchases
+- **Solution:** Onboarding nurture sequence (Priority: 8.3)
+- **Integration:** Webhook from CRM
+- **Memory:** Avoids previously failed experiments
 
-### Use Case 3: E-commerce Store
-**Problem:** High bounce rate at signup (60% drop from leads to signups)  
-**Input Method:** Shopify export CSV  
-**Solution:** Live product demo sessions (Priority: 5.3)  
-**Result:** Hands-on experience increases confidence
+### E-commerce (High Signup Bounce)
+- **Problem:** 60% drop leads→signups
+- **Solution:** Live product demos (Priority: 5.3)
+- **Input:** CSV from Shopify
+- **Monitor:** Real-time agent metrics
 
 ---
 
-## 📚 Documentation
-
-- **[USAGE.md](USAGE.md)** - Detailed usage guide with API examples
-- **[/docs](http://127.0.0.1:8000/docs)** - Interactive API documentation (when server running)
-- **[LICENSE](LICENSE)** - MIT License details
-- **[examples/](examples/)** - Sample JSON and CSV files for testing
+## 📁 Project Structure
+```
+sme-growth-copilot/
+├── app/
+│   ├── agents/                 # 6 specialized AI agents
+│   ├── integrations/           # Slack & Email notifiers
+│   ├── monitoring/             # Performance tracking
+│   ├── static/                 # Dashboard assets
+│   ├── templates/              # HTML templates
+│   ├── main.py                 # FastAPI app
+│   ├── orchestrator.py         # Multi-agent coordinator
+│   ├── schemas.py              # Pydantic models
+│   ├── models.py               # SQLAlchemy models
+│   ├── database.py             # Database config
+│   ├── db_utils.py             # Database helpers
+│   ├── logic.py                # Business logic
+│   └── storage.py              # JSONL persistence
+├── tests/                      # Unit & integration tests
+├── data/                       # Historical logs
+├── examples/                   # Sample files
+└── README.md                   # This file
+```
 
 ---
 
 ## 🤝 Contributing
 
-Contributions welcome! This project is designed for extensibility.
-
-**Areas for contribution:**
+Contributions welcome! Areas for contribution:
 - Additional experiment templates
 - Industry-specific logic
-- New funnel metrics
 - LLM provider integrations
-- CSV format adapters for popular platforms (Shopify, Stripe, etc.)
 - Test coverage improvements
 
 ---
 
 ## 📄 License
 
-MIT License
-
-Copyright (c) 2025 Christopher Crilly Pienaah
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - Copyright (c) 2025 Christopher Crilly Pienaah
 
 ---
 
@@ -725,11 +470,10 @@ SOFTWARE.
 
 **Christopher Crilly Pienaah**  
 Master's in Analytics @ Northeastern University (GPA: 3.96)  
-AI/ML Product Strategist & Data Scientist | Founder, LuminaMed-AI
+AI/ML Product Strategist | Founder, LuminaMed-AI
 
 - LinkedIn: [Christopher Crilly Pienaah](https://www.linkedin.com/in/christopher-crilly-pienaah)
 - GitHub: [@CrillyPienaah](https://github.com/CrillyPienaah)
-- Portfolio: LuminaMed-AI
 
 ---
 
@@ -737,23 +481,20 @@ AI/ML Product Strategist & Data Scientist | Founder, LuminaMed-AI
 
 - Built for the **Google Kaggle AI Agents Capstone** competition
 - Powered by **Google Gemini 2.0 Flash**
-- Inspired by Sean Ellis's ICE prioritization framework
-- Special thanks to the Northeastern Analytics cohort
-- CSV upload feature inspired by community feedback on reducing data entry friction
+- Inspired by Sean Ellis's ICE framework
 
 ---
 
 ## 📈 Project Stats
 
-- **Lines of Code:** ~1,300
-- **Architecture:** 6-agent collaborative system with orchestration
-- **Test Coverage:** 69% (18 tests passing)
-- **API Endpoints:** 4 (JSON input, CSV upload, history, health)
-- **API Response Time:** <1 second (multi-agent workflow)
-- **Supported Input Formats:** JSON, CSV
-- **Supported Industries:** All (customizable experiment templates)
-- **Agent Observability:** Full trace logging with unique IDs
+- **Lines of Code:** 5,000+
+- **Agents:** 6 specialized AI agents
+- **Features:** 9 enterprise features
+- **Tests:** 18 unit tests passing
+- **API Endpoints:** 10+
+- **Development Time:** 18+ hours intensive coding
+- **Status:** Production-ready
 
 ---
 
-**Built with ❤️ for small businesses that deserve world-class growth strategy**
+**Built with ❤️ and ☕ for SMEs that deserve world-class growth strategy**
