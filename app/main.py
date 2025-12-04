@@ -266,6 +266,16 @@ def get_specific_agent_performance(agent_name: str, days: int = 7):
     from .monitoring.performance_tracker import PerformanceTracker
     return PerformanceTracker.get_agent_stats(agent_name, days)
 
+@app.get("/debug/api-key")
+def check_api_key():
+    import os
+    key = os.getenv("GOOGLE_API_KEY")
+    return {
+        "has_key": key is not None,
+        "key_length": len(key) if key else 0,
+        "key_preview": f"{key[:10]}..." if key else None
+    }
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
