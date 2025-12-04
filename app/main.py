@@ -41,6 +41,11 @@ async def dashboard_home(request: Request):
     """Serve the main dashboard"""
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
+@app.get("/analyze", response_class=HTMLResponse)
+async def analyze_page(request: Request):
+    """Customer-facing analysis page"""
+    return templates.TemplateResponse("analyze.html", {"request": request})
+
 @app.post("/plan", response_model=GrowthPlan)
 async def create_plan(
     request: PlanRequest,

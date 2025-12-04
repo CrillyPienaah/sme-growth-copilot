@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SME Growth Co-Pilot - AI-Powered Growth Strategy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Animated gradient background */
+        .animated-gradient {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating animation */
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Glow effect */
+        .glow {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 5px;
+        }
+        
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Input focus glow */
+        input:focus, select:focus, textarea:focus {
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-purple-50 to-indigo-50">
+    
+    <!-- Modern Navbar -->
+    <nav class="glass fixed w-full top-0 z-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                        <span class="text-2xl">🚀</span>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                        Growth Co-Pilot
+                    </span>
+                </div>
+                <div class="flex space-x-8">
+                    <a href="#analyze" class="text-gray-700 hover:text-purple-600 font-medium transition">Analyze</a>
+                    <a href="#pricing" class="text-gray-700 hover:text-purple-600 font-medium transition">Pricing</a>
+                    <a href="/docs" class="text-gray-700 hover:text-purple-600 font-medium transition">API</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6 relative overflow-hidden">
+        <!-- Animated background elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+            <div class="absolute top-40 left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        </div>
+        
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-block mb-6">
+                <span class="bg-purple-100 text-purple-700 px-6 py-2 rounded-full text-sm font-semibold">
+                    ✨ Powered by Multi-Agent AI
+                </span>
+            </div>
+            <h1 class="text-6xl md:text-7xl font-black mb-6 leading-tight">
+                <span class="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    Growth Strategy
+                </span>
+                <br>
+                <span class="text-gray-900">in 60 Seconds</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto font-light">
+                Stop wasting money on failed experiments. Our AI analyzes your funnel, 
+                <span class="font-semibold text-purple-600">remembers what doesn't work</span>, 
+                and delivers data-driven recommendations instantly.
+            </p>
+            <a href="#analyze" class="inline-block bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-12 py-5 rounded-2xl text-lg font-bold shadow-2xl hover:shadow-purple-500/50 transition-all transform hover:scale-105 glow">
+                Start Free Analysis →
+            </a>
+            
+            <!-- Trust indicators -->
+            <div class="mt-12 flex justify-center items-center space-x-8 text-sm text-gray-500">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>No Credit Card</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>Instant Results</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>100% Free Trial</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 px-6 bg-white/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-8 glass rounded-3xl hover:shadow-xl transition-all transform hover:-translate-y-2">
+                    <div class="text-5xl font-black bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-3">
+                        $12K+
+                    </div>
+                    <p class="text-gray-700 font-semibold">Average Annual Savings</p>
+                    <p class="text-sm text-gray-500 mt-2">vs. hiring consultants</p>
+                </div>
+                <div class="text-center p-8 glass rounded-3xl hover:shadow-xl transition-all transform hover:-translate-y-2">
+                    <div class="text-5xl font-black bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-3">
+                        <60s
+                    </div>
+                    <p class="text-gray-700 font-semibold">Analysis Time</p>
+                    <p class="text-sm text-gray-500 mt-2">From data to actionable plan</p>
+                </div>
+                <div class="text-center p-8 glass rounded-3xl hover:shadow-xl transition-all transform hover:-translate-y-2">
+                    <div class="text-5xl font-black bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-3">
+                        100%
+                    </div>
+                    <p class="text-gray-700 font-semibold">Data-Driven</p>
+                    <p class="text-sm text-gray-500 mt-2">No guesswork, only math</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Analysis Form -->
+    <section id="analyze" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            
+            <div id="analysisFormSection" class="glass rounded-3xl p-10 md:p-12 shadow-2xl border-t-4 border-purple-600">
+                <div class="text-center mb-10">
+                    <h2 class="text-4xl font-black text-gray-900 mb-4">Get Your Free Growth Analysis</h2>
+                    <p class="text-gray-600">Enter your business metrics and we'll identify your biggest opportunity</p>
+                </div>
+                
+                <form id="analysisForm" class="space-y-8">
+                    
+                    <!-- Business Info -->
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+                            <span class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center mr-3 text-lg">1</span>
+                            Business Profile
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6 ml-13">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Business Name *</label>
+                                <input type="text" id="businessName" required
+                                    class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white"
+                                    placeholder="Acme Coffee Co.">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Industry *</label>
+                                <select id="industry" required
+                                    class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white">
+                                    <option value="">Choose industry...</option>
+                                    <option value="E-commerce">🛒 E-commerce</option>
+                                    <option value="SaaS">💻 SaaS</option>
+                                    <option value="Food & Beverage">☕ Food & Beverage</option>
+                                    <option value="Retail">🏪 Retail</option>
+                                    <option value="Services">💼 Professional Services</option>
+                                    <option value="Healthcare">🏥 Healthcare</option>
+                                    <option value="Education">📚 Education</option>
+                                    <option value="Other">🔧 Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Region</label>
+                                <input type="text" id="region"
+                                    class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white"
+                                    placeholder="North America" value="North America">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Your Email *</label>
+                                <input type="email" id="email" required
+                                    class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white"
+                                    placeholder="you@business.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPIs -->
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+                            <span class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center mr-3 text-lg">2</span>
+                            Monthly Metrics
+                        </h3>
+                        <p class="text-gray-600 ml-13">Last 30 days performance data</p>
+                        <div class="grid md:grid-cols-2 gap-6 ml-13">
+                            <div class="relative">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Website Visitors *</label>
+                                <div class="relative">
+                                    <input type="number" id="visits" required
+                                        class="w-full pl-12 pr-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white"
+                                        placeholder="5,000">
+                                    <span class="absolute left-4 top-4 text-gray-400 text-lg">👥</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">Total website traffic</p>
+                            </div>
+                            <div class="relative">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Leads Captured *</label>
+                                <div class="relative">
+                                    <input type="number" id="leads" required
+                                        class="w-full pl-12 pr-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white"
+                                        placeholder="500">
+                                    <span class="absolute left-4 top-4 text-gray-400 text-lg">📧</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">Email signups, inquiries</p>
+                            </div>
+                            <div class="relative">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Account Signups *</label>
+                                <div class="relative">
+                                    <input type="number" id="signups" required
+                                        class="w-full pl-12 pr-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white"
+                                        placeholder="200">
+                                    <span class="absolute left-4 top-4 text-gray-400 text-lg">👤</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">Created accounts</p>
+                            </div>
+                            <div class="relative">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Purchases *</label>
+                                <div class="relative">
+                                    <input type="number" id="purchases" required
+                                        class="w-full pl-12 pr-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white"
+                                        placeholder="100">
+                                    <span class="absolute left-4 top-4 text-gray-400 text-lg">🛒</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">Completed transactions</p>
+                            </div>
+                            <div class="md:col-span-2 relative">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Total Revenue *</label>
+                                <div class="relative">
+                                    <input type="number" id="revenue" required step="0.01"
+                                        class="w-full pl-12 pr-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white"
+                                        placeholder="10,000.00">
+                                    <span class="absolute left-4 top-4 text-gray-400 text-lg">💵</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">Total sales in USD (last 30 days)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Goal -->
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+                            <span class="w-10 h-10 bg-yellow-500 text-white rounded-full flex items-center justify-center mr-3 text-lg">3</span>
+                            Growth Goal
+                        </h3>
+                        <div class="ml-13">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">What do you want to achieve? *</label>
+                            <textarea id="goal" rows="3" required
+                                class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all duration-200 bg-white"
+                                placeholder="Increase revenue by 30% in 90 days without increasing ad spend"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="pt-6 text-center">
+                        <button type="submit"
+                            class="w-full sm:w-auto bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 bg-size-200 bg-pos-0 hover:bg-pos-100 text-white px-16 py-5 rounded-2xl text-xl font-black shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 transform hover:scale-105 glow">
+                            🚀 Analyze My Business Now
+                        </button>
+                        <p class="text-sm text-gray-500 mt-4">Full report sent to your email • No signup required</p>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="hidden max-w-2xl mx-auto px-6 py-20">
+        <div class="glass rounded-3xl p-12 text-center shadow-2xl border-t-4 border-indigo-600">
+            <div class="relative w-24 h-24 mx-auto mb-8">
+                <div class="absolute inset-0 border-8 border-purple-200 rounded-full"></div>
+                <div class="absolute inset-0 border-8 border-t-purple-600 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                <div class="absolute inset-3 border-8 border-indigo-200 rounded-full"></div>
+                <div class="absolute inset-3 border-8 border-t-transparent border-r-indigo-600 border-b-transparent border-l-transparent rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+            </div>
+            <h3 class="text-3xl font-bold text-gray-900 mb-3">Analyzing Your Business...</h3>
+            <p class="text-gray-600 mb-8">Our 6 AI agents are working on your growth plan</p>
+            
+            <div class="space-y-4 max-w-md mx-auto text-left">
+                <div class="flex items-center p-4 bg-purple-50 rounded-xl">
+                    <div class="w-2 h-2 bg-purple-600 rounded-full mr-4 animate-pulse"></div>
+                    <span class="text-gray-700">Diagnosing funnel bottlenecks...</span>
+                </div>
+                <div class="flex items-center p-4 bg-indigo-50 rounded-xl">
+                    <div class="w-2 h-2 bg-indigo-600 rounded-full mr-4 animate-pulse" style="animation-delay: 0.2s;"></div>
+                    <span class="text-gray-700">Calculating revenue opportunities...</span>
+                </div>
+                <div class="flex items-center p-4 bg-purple-50 rounded-xl">
+                    <div class="w-2 h-2 bg-purple-600 rounded-full mr-4 animate-pulse" style="animation-delay: 0.4s;"></div>
+                    <span class="text-gray-700">Ranking experiments by ICE framework...</span>
+                </div>
+                <div class="flex items-center p-4 bg-yellow-50 rounded-xl">
+                    <div class="w-2 h-2 bg-yellow-600 rounded-full mr-4 animate-pulse" style="animation-delay: 0.6s;"></div>
+                    <span class="text-gray-700">Generating marketing copy...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultsSection" class="hidden max-w-5xl mx-auto px-6 py-20">
+        
+        <!-- Success Alert -->
+        <div class="glass-dark text-white rounded-3xl p-8 mb-10 shadow-2xl border border-white/20">
+            <div class="flex items-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mr-6 text-3xl shadow-lg">
+                    ✓
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-2">Analysis Complete!</h3>
+                    <p class="text-gray-200">Your personalized growth plan is ready. Full PDF report sent to your email.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottleneck Card -->
+        <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 mb-10 shadow-xl border-4 border-yellow-300">
+            <h3 class="text-3xl font-black mb-6 flex items-center text-gray-900">
+                <span class="text-4xl mr-4">⚠️</span>
+                Critical Bottleneck Detected
+            </h3>
+            <div id="bottleneckInfo"></div>
+        </div>
+
+        <!-- Top Experiment -->
+        <div class="glass rounded-3xl p-10 mb-10 shadow-2xl border-t-4 border-purple-600">
+            <h3 class="text-3xl font-black mb-6 flex items-center">
+                <span class="w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center mr-4 text-2xl shadow-lg">🎯</span>
+                <span class="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                    Highest Priority Experiment
+                </span>
+            </h3>
+            <div id="experimentInfo"></div>
+        </div>
+
+        <!-- All Experiments -->
+        <div class="glass rounded-3xl p-10 mb-10 shadow-xl">
+            <h3 class="text-2xl font-bold mb-6 text-gray-900">📊 All Experiments (ICE Ranked)</h3>
+            <div id="allExperiments" class="space-y-3"></div>
+        </div>
+
+        <!-- Marketing Copy -->
+        <div class="glass rounded-3xl p-10 mb-10 shadow-xl">
+            <h3 class="text-2xl font-bold mb-4 text-gray-900">✍️ Campaign Copy</h3>
+            <p class="text-gray-600 mb-4">Ready-to-use messaging for your top experiment:</p>
+            <div id="marketingCopy" class="bg-gray-900 text-green-400 p-6 rounded-2xl font-mono text-sm whitespace-pre-wrap shadow-inner border border-gray-700"></div>
+            <button onclick="copyCopy()" class="mt-4 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-bold hover:shadow-lg transition-all">
+                📋 Copy to Clipboard
+            </button>
+        </div>
+
+        <!-- Upgrade CTA -->
+        <div class="relative overflow-hidden rounded-3xl shadow-2xl mb-10">
+            <div class="animated-gradient p-12 text-center">
+                <div class="relative z-10">
+                    <h3 class="text-4xl font-black text-white mb-4">Want Unlimited Analysis?</h3>
+                    <p class="text-2xl text-white/90 mb-8 font-light">
+                        Get Slack notifications, webhook integration, and priority AI support
+                    </p>
+                    <a href="mailto:ccpienaah@gmail.com?subject=Interested%20in%20SME%20Growth%20Co-Pilot%20Pro&body=Hi%2C%0A%0AI%27d%20like%20to%20learn%20more%20about%20the%20Pro%20plan.%0A%0ABusiness%20Name%3A%20%0AIndustry%3A%20" 
+                       class="inline-block bg-white text-purple-600 px-10 py-5 rounded-2xl text-xl font-black shadow-2xl hover:shadow-white/50 transition-all transform hover:scale-110">
+                        Upgrade to Pro - $29/mo
+                    </a>
+                    <p class="text-white/80 mt-4 text-sm">7-day free trial • Cancel anytime</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reset -->
+        <div class="text-center">
+            <button onclick="resetForm()" class="inline-flex items-center text-purple-600 hover:text-purple-800 font-bold text-lg transition-all">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"></path></svg>
+                Analyze Another Business
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-20">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="mb-6">
+                <span class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                    SME Growth Co-Pilot
+                </span>
+            </div>
+            <p class="text-gray-400 mb-6">
+                AI-Powered Growth Strategy for Modern Businesses
+            </p>
+            <div class="flex justify-center space-x-6 mb-6 text-sm">
+                <a href="/docs" class="hover:text-purple-400 transition">API Documentation</a>
+                <a href="https://github.com/CrillyPienaah/sme-growth-copilot" class="hover:text-purple-400 transition">GitHub</a>
+                <a href="mailto:ccpienaah@gmail.com" class="hover:text-purple-400 transition">Contact</a>
+            </div>
+            <p class="text-xs text-gray-500">
+                © 2025 SME Growth Co-Pilot • Built with ❤️ for SMEs worldwide
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const form = document.getElementById('analysisForm');
+        const formSection = document.getElementById('analysisFormSection');
+        const loadingState = document.getElementById('loadingState');
+        const resultsSection = document.getElementById('resultsSection');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Hide form, show loading
+            formSection.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const formData = {
+                business_profile: {
+                    business_id: `biz_${Date.now()}`,
+                    name: document.getElementById('businessName').value,
+                    industry: document.getElementById('industry').value,
+                    region: document.getElementById('region').value,
+                    main_channels: ["Website"],
+                    tone_of_voice: "professional"
+                },
+                kpis: {
+                    visits: parseInt(document.getElementById('visits').value),
+                    leads: parseInt(document.getElementById('leads').value),
+                    signups: parseInt(document.getElementById('signups').value),
+                    purchases: parseInt(document.getElementById('purchases').value),
+                    revenue: parseFloat(document.getElementById('revenue').value)
+                },
+                goal: {
+                    objective: document.getElementById('goal').value,
+                    horizon_weeks: 8
+                }
+            };
+
+            const recipientEmail = document.getElementById('email').value;
+
+            try {
+                // Call REAL API
+                const response = await fetch('/plan/with-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        request: formData,
+                        recipient_emails: [recipientEmail]
+                    })
+                });
+
+                if (!response.ok) throw new Error('API call failed');
+
+                const plan = await response.json();
+                displayResults(plan);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('⚠️ Something went wrong. Please check your inputs and try again.');
+                loadingState.classList.add('hidden');
+                formSection.classList.remove('hidden');
+                return;
+            }
+
+            // Show results
+            loadingState.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function displayResults(plan) {
+            // Calculate revenue opportunity
+            const avgRevenuePerPurchase = plan.kpis.revenue / plan.kpis.purchases;
+            const projectedPurchases = plan.kpis.purchases / (1 - plan.funnel_insight.drop_rate);
+            const revenueOpp = (projectedPurchases - plan.kpis.purchases) * avgRevenuePerPurchase;
+            
+            // Bottleneck
+            document.getElementById('bottleneckInfo').innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-6 bg-white rounded-2xl shadow-md">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">Conversion Drop</p>
+                            <p class="text-3xl font-black text-gray-900">
+                                ${plan.funnel_insight.from_step} → ${plan.funnel_insight.to_step}
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-600 mb-1">Drop Rate</p>
+                            <p class="text-3xl font-black text-red-600">${(plan.funnel_insight.drop_rate * 100).toFixed(1)}%</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 bg-white p-4 rounded-xl">${plan.funnel_insight.comment}</p>
+                    <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-6 rounded-2xl text-white shadow-lg">
+                        <p class="text-sm mb-2 opacity-90">💰 Revenue Opportunity if Fixed:</p>
+                        <p class="text-5xl font-black">$${revenueOpp.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                    </div>
+                </div>
+            `;
+
+            // Top Experiment
+            const topExp = plan.chosen_experiment;
+            document.getElementById('experimentInfo').innerHTML = `
+                <div class="bg-white rounded-2xl p-6 mb-6 shadow-md">
+                    <h4 class="text-3xl font-black text-gray-900 mb-4">${topExp.experiment.name}</h4>
+                    <div class="grid grid-cols-3 gap-3 mb-6">
+                        <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+                            <p class="text-xs text-blue-700 mb-1">Impact</p>
+                            <p class="text-3xl font-black text-blue-600">${topExp.impact}<span class="text-lg">/5</span></p>
+                        </div>
+                        <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
+                            <p class="text-xs text-green-700 mb-1">Confidence</p>
+                            <p class="text-3xl font-black text-green-600">${topExp.confidence}<span class="text-lg">/5</span></p>
+                        </div>
+                        <div class="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl">
+                            <p class="text-xs text-yellow-700 mb-1">Effort</p>
+                            <p class="text-3xl font-black text-yellow-600">${topExp.effort}<span class="text-lg">/5</span></p>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-purple-50 to-indigo-50 p-5 rounded-xl border-l-4 border-purple-600">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Why This Works:</p>
+                        <p class="italic text-gray-800">"${topExp.experiment.hypothesis}"</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="inline-block bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg">
+                        ICE Priority Score: ${topExp.priority_score.toFixed(1)}
+                    </div>
+                </div>
+            `;
+
+            // All Experiments
+            const experimentsHtml = plan.experiments.map((exp, i) => `
+                <div class="flex items-center justify-between p-5 rounded-2xl transition-all hover:shadow-lg ${i === 0 ? 'bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 shadow-md' : 'bg-white border border-gray-200'}">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 ${i === 0 ? 'bg-purple-600' : 'bg-gray-400'} text-white rounded-xl flex items-center justify-center font-bold text-lg">
+                            ${i + 1}
+                        </div>
+                        <div>
+                            <p class="font-bold text-lg text-gray-900">${exp.experiment.name}</p>
+                            <p class="text-sm text-gray-600">${exp.experiment.channel}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-3xl font-black ${i === 0 ? 'text-purple-600' : 'text-gray-700'}">${exp.priority_score.toFixed(1)}</p>
+                        <p class="text-xs text-gray-500">I:${exp.impact} C:${exp.confidence} E:${exp.effort}</p>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('allExperiments').innerHTML = experimentsHtml;
+
+            // Copy
+            document.getElementById('marketingCopy').textContent = plan.copy_suggestion || 'No copy generated';
+        }
+
+        function copyCopy() {
+            const copyText = document.getElementById('marketingCopy').textContent;
+            navigator.clipboard.writeText(copyText);
+            
+            // Modern toast notification
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 right-8 bg-green-600 text-white px-6 py-4 rounded-2xl shadow-2xl transform transition-all duration-500';
+            toast.innerHTML = '✅ Copied to clipboard!';
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 2000);
+        }
+
+        function resetForm() {
+            formSection.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+            form.reset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Add blob animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes blob {
+                0%, 100% { transform: translate(0, 0) scale(1); }
+                25% { transform: translate(20px, -50px) scale(1.1); }
+                50% { transform: translate(-20px, 20px) scale(0.9); }
+                75% { transform: translate(50px, 50px) scale(1.05); }
+            }
+            .animate-blob {
+                animation: blob 7s infinite;
+            }
+            .animation-delay-2000 {
+                animation-delay: 2s;
+            }
+            .animation-delay-4000 {
+                animation-delay: 4s;
+            }
+            .bg-size-200 {
+                background-size: 200%;
+            }
+            .bg-pos-0 {
+                background-position: 0%;
+            }
+            .hover\\:bg-pos-100:hover {
+                background-position: 100%;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+</body>
+</html>
