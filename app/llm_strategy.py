@@ -61,6 +61,30 @@ def generate_strategy_commentary(plan: GrowthPlan) -> str:
         for se in plan.experiments
     )
 
+    # Safe helper function for percentages
+    def safe_pct(numerator, denominator, default=0):
+        """Safely calculate percentage, handling None and zero division."""
+        if numerator is None or denominator is None or denominator == 0:
+            return default
+        return (numerator / denominator) * 100
+
+    # Safe helper for simple values
+    def safe_val(value, default=0):
+        """Return value or default if None."""
+        return value if value is not None else default
+
+    # Build safe metrics
+    visits = safe_val(plan.kpis.visits)
+    leads = safe_val(plan.kpis.leads)
+    signups = safe_val(plan.kpis.signups)
+    purchases = safe_val(plan.kpis.purchases)
+    revenue = safe_val(plan.kpis.revenue)
+    retention_rate = safe_val(plan.kpis.retention_rate)
+
+    lead_conversion = safe_pct(leads, visits)
+    signup_conversion = safe_pct(signups, leads)
+    purchase_conversion = safe_pct(purchases, signups)
+
     prompt = f"""
 {_SYSTEM_PROMPT}
 
@@ -74,12 +98,12 @@ Current tone: {plan.business_profile.tone_of_voice or 'Professional'}
 
 CURRENT SITUATION:
 Period analyzed: {plan.kpis.period}
-Traffic: {plan.kpis.visits:,} visits
-Lead capture: {plan.kpis.leads:,} leads ({plan.kpis.leads/plan.kpis.visits*100:.1f}% conversion)
-Signups: {plan.kpis.signups:,} ({plan.kpis.signups/plan.kpis.leads*100:.1f}% from leads)
-Purchases: {plan.kpis.purchases:,} ({plan.kpis.purchases/plan.kpis.signups*100:.1f}% from signups)
-Revenue: ${plan.kpis.revenue:,.2f}
-Customer retention: {plan.kpis.retention_rate*100:.0f}%
+Traffic: {visits:,} visits
+Lead capture: {leads:,} leads ({lead_conversion:.1f}% conversion)
+Signups: {signups:,} ({signup_conversion:.1f}% from leads)
+Purchases: {purchases:,} ({purchase_conversion:.1f}% from signups)
+Revenue: ${revenue:,.2f}
+Customer retention: {retention_rate*100:.0f}%
 
 BIGGEST PROBLEM:
 {plan.funnel_insight.comment}
