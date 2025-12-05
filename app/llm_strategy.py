@@ -10,7 +10,17 @@ from .schemas import GrowthPlan
 _API_ENV_VAR = "GOOGLE_API_KEY"
 
 _api_key = os.getenv(_API_ENV_VAR)
-_client = genai.Client(api_key=_api_key) if _api_key else None
+
+# --- DEBUGGING BLOCK START ---
+if _api_key:
+    # Key is found, try to initialize client
+    _client = genai.Client(api_key=_api_key)
+    print("✅ Gemini Client successfully initialized.")
+else:
+    # Key is not found, client remains None
+    _client = None
+    print(f"⚠️ API Key not found in environment variable: {_API_ENV_VAR}. Using fallback strategy.")
+# --- DEBUGGING BLOCK END ---
 
 _SYSTEM_PROMPT = """
 You are a McKinsey-level growth strategist specializing in SME scale-up strategies. Your analyses have helped 200+ businesses achieve 3-5x revenue growth.
@@ -25,7 +35,7 @@ STRUCTURE YOUR RESPONSE IN EXACTLY 3 SECTIONS:
 
 Begin: "Your growth is constrained by [specific bottleneck]."
 
-Analyze the root cause using their actual data. Quantify the financial impact. Explain the market dynamics or operational factors creating this bottleneck. Reference their industry, geography, and competitive context.
+Analyze the root cause using their actual data. Quantify the financial impact. Explain the market dynamics or operational factors creating this bottleneck. Reference their industry, geography, and **direct competitive landscape**.
 
 Keep this section: 120-150 words.
 
@@ -38,8 +48,9 @@ Begin: "The highest-leverage intervention is [experiment name]."
 Explain the strategic logic:
 - Why this approach addresses the root cause (not just symptoms)
 - How it aligns with their constraints (budget, time, resources)
+- **The strategy must be a non-obvious, innovative approach (e.g., leveraging AI, combining channels uniquely, or exploiting market asymmetry).**
 - Why this outperforms alternative approaches in their specific context
-- What business model dynamics make this scalable
+- What business model dynamics make this **exponentially scalable**
 
 Reference proven growth frameworks (viral coefficient, customer acquisition economics, retention cohorts) in plain language.
 
@@ -60,7 +71,7 @@ Define key metrics to track. State decision criteria for pivots. Provide conserv
 **Days 61-90 (Scale):**
 Explain how to compound early wins. Include next-phase experiments to stack on this foundation.
 
-End with: "Conservative outcome: [X]. Optimistic outcome: [Y]. Break-even point: [Z]."
+End with: "Conservative outcome: [X]. Optimistic outcome: [Y]. **Projected Lifetime Value (LTV) uplift: [Z].**"
 
 Keep this section: 130-160 words.
 
@@ -92,7 +103,7 @@ def generate_strategy_commentary(plan: GrowthPlan) -> str:
     )
 
     # Fallback if no API key configured
-    if _client is None:
+    if _client is None:  # ← Should be at this level, NOT indented further
         print("⚠️ No GOOGLE_API_KEY found - using fallback strategy")
         return fallback_message
 
@@ -113,7 +124,7 @@ def generate_strategy_commentary(plan: GrowthPlan) -> str:
     signups = safe_val(plan.kpis.signups)
     purchases = safe_val(plan.kpis.purchases)
     revenue = safe_val(plan.kpis.revenue)
-    retention_rate = safe_val(plan.kpis.retention_rate)
+    retention_rate = safe_val(plan.kpis.retention_rate, default=0.5) # Assume 50% if not provided
 
     lead_conversion = safe_pct(leads, visits)
     signup_conversion = safe_pct(signups, leads)
@@ -125,13 +136,22 @@ def generate_strategy_commentary(plan: GrowthPlan) -> str:
     current_step = plan.funnel_insight.from_step.lower()
     next_step = plan.funnel_insight.to_step.lower()
     
-    if current_step == "visits" and next_step == "leads":
-        lost_customers = visits - leads
-    elif current_step == "leads" and next_step == "signups":
-        lost_customers = leads - signups
-    elif current_step == "signups" and next_step == "purchases":
-        lost_customers = signups - purchases
+    # Simplified lost customer calculation based on the funnel step
+    if current_step == "website visitors" and next_step == "leads captured":
+        # Using a conservative 25% industry benchmark for leads/visits to calculate 'lost' opportunity
+        target_leads = visits * 0.25
+        lost_customers = target_leads - leads
+    elif current_step == "leads captured" and next_step == "account signups / trials":
+        # Using a conservative 40% industry benchmark for signups/leads to calculate 'lost' opportunity
+        target_signups = leads * 0.40
+        lost_customers = target_signups - signups
+    elif current_step == "account signups / trials" and next_step == "purchases / paying customers":
+        # Using a conservative 10% industry benchmark for purchases/signups to calculate 'lost' opportunity
+        target_purchases = signups * 0.10
+        lost_customers = target_purchases - purchases
     
+    # Ensure lost_customers is not negative and multiply by AOV to get revenue opportunity
+    lost_customers = max(0, lost_customers)
     revenue_opportunity = lost_customers * avg_customer_value
 
     experiments_summary = "\n".join(
@@ -155,13 +175,12 @@ CURRENT PERFORMANCE (30-DAY SNAPSHOT):
 - Completed Purchases: {purchases:,} ({purchase_conversion:.1f}% from signups)
 - Total Revenue: ${revenue:,.2f}
 - Average Order Value: ${avg_customer_value:.2f}
-- Customer Retention: {retention_rate*100:.0f}%
+- Customer Retention (Mock): {retention_rate*100:.0f}%
 
 CRITICAL BOTTLENECK IDENTIFIED:
 Stage: {plan.funnel_insight.from_step} → {plan.funnel_insight.to_step}
-Drop Rate: {plan.funnel_insight.drop_rate*100:.1f}%
-Lost Customers: {lost_customers:,} potential buyers
-Revenue at Stake: ${revenue_opportunity:,.2f}
+Current Conversion Rate: {plan.funnel_insight.drop_rate*100:.1f}% Drop
+Revenue at Stake (per 30 days, based on benchmark gap): ${revenue_opportunity:,.2f}
 
 Technical Finding: {plan.funnel_insight.comment}
 
@@ -172,6 +191,8 @@ Constraints: {plan.goal.constraints or 'Standard operating budget and resources'
 
 PRIORITIZED EXPERIMENTS (ICE Framework):
 {experiments_summary}
+
+**INNOVATION REQUIREMENT: Your strategy must incorporate the innovative elements of the top-ranked experiment ({chosen.experiment.name}) and demonstrate how it is non-obvious compared to standard marketing tactics.**
 
 YOUR RECOMMENDED STRATEGY:
 Experiment: {chosen.experiment.name}
